@@ -13,7 +13,7 @@ import { RecentSales } from './dashboard/recent-sales'
 const AdminDashboardPage = () => {
     return (
         <>
-            <div className="md:hidden">
+            {/* <div className="md:hidden">
                 <img
                     src="/examples/dashboard-light.png"
                     width={1280}
@@ -28,8 +28,8 @@ const AdminDashboardPage = () => {
                     alt="Dashboard"
                     className="hidden dark:block"
                 />
-            </div>
-            <div className="hidden flex-col md:flex">
+            </div> */}
+            <div className="flex-col md:flex">
 
                 {/* <div className="border-b">
                     <div className="flex h-16 items-center px-4">
