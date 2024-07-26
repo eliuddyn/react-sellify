@@ -11,6 +11,7 @@ const CustomerLayout = () => {
     const logoutUser = async () => {
         await account.deleteSession('current')
         setUserSession(null);
+        localStorage.removeItem('slUserRole')
         navigate('/')
     }
 

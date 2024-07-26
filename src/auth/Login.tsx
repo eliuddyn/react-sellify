@@ -86,11 +86,15 @@ const LoginPage = () => {
         const promise = account.createEmailPasswordSession(values.email, values.password);
 
         promise.then(async () => {
-            //  console.log(response); // Success
 
-            const { labels } = await account.get()
+            // Success
 
-            localStorage.setItem('slUserRole', labels[0] as string);
+            console.log(await account.get());
+
+            const { prefs } = await account.get()
+            //const { labels } = await account.get()
+
+            localStorage.setItem('slUserRole', prefs?.role as string);
 
             setUserSession(await account.get())
             navigate('/dashboard')

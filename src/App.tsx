@@ -12,8 +12,6 @@ import ResetPasswordPage from "./auth/ResetPassword";
 
 import AdminDashboardPage from "./pages/admin/AdminDashboard";
 import ProductsPage from "./pages/admin/Products";
-import AddProductPage from "./pages/admin/AddProduct";
-import ProductPage from "./pages/admin/Product";
 import OrdersPage from "./pages/admin/Orders";
 import CustomersPage from "./pages/admin/Customers";
 
@@ -22,6 +20,7 @@ import CustomerProfilePage from "./pages/customer/CustomerProfile";
 import CustomerOrdersPage from "./pages/customer/CustomerOrders";
 import CustomerCartPage from "./pages/customer/CustomerCart";
 import CategoriesPage from "./pages/admin/Categories";
+import ErrorPage from "./ErrorPage";
 
 
 function App() {
@@ -43,8 +42,6 @@ function App() {
             <Route path="/dashboard" element={<AdminDashboardPage />} />
             <Route path="/categorias" element={<CategoriesPage />} />
             <Route path="/productos" element={<ProductsPage />} />
-            <Route path="/productos/editar" element={<AddProductPage />} />
-            <Route path="/productos/:id" element={<ProductPage />} />
             <Route path="/ordenes" element={<OrdersPage />} />
             <Route path="/clientes" element={<CustomersPage />} />
           </Route>
@@ -57,6 +54,8 @@ function App() {
           </Route>
 
         </Route>
+
+        <Route path="/*" element={<ErrorPage />} />
       </Routes>
     </Router>
   )
