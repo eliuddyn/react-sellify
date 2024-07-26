@@ -89,7 +89,7 @@ const LoginPage = () => {
 
             // Success
 
-            console.log(await account.get());
+            //console.log(await account.get());
 
             const { prefs } = await account.get()
             //const { labels } = await account.get()
