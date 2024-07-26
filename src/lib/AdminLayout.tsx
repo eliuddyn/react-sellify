@@ -2,21 +2,19 @@
 import { useState } from 'react'
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import {
-    type LucideIcon,
     CircleUser,
-    LogOut,
     Menu,
     Search,
 } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
+//import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
+// import {
+//     Card,
+//     CardContent,
+//     CardDescription,
+//     CardHeader,
+//     CardTitle,
+// } from "@/components/ui/card"
 import {
     AlertDialog,
     AlertDialogAction,
@@ -57,7 +55,7 @@ import { cn } from './utils'
 const AdminLayout = () => {
 
     const navigate = useNavigate();
-    const userSession = useSellifyStore((state) => state.userSession)
+    //const userSession = useSellifyStore((state) => state.userSession)
     const setUserSession = useSellifyStore((state) => state.setUserSession)
     const [alertDialogForLogout, setAlertDialogForLogout] = useState<boolean>(false);
     const location = useLocation();
@@ -246,7 +244,7 @@ const AdminLayout = () => {
                                 <DropdownMenuItem className='cursor-pointer'>
                                     <button
                                         className='w-full text-start'
-                                        onClick={() => setAlertDialogForLogout((prev: boolean) => prev = true)}
+                                        onClick={() => setAlertDialogForLogout(true)}
                                     >
                                         Salir
                                     </button>

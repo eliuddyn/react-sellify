@@ -8,11 +8,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import PageHeader from '@/lib/PageHeader'
 import MyTable from '@/lib/MyTable'
 import { SquarePen } from 'lucide-react';
-import { Category, Product } from '@/types/myTypes';
+//import { Category, Product } from '@/types/myTypes';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+//import { Label } from "@/components/ui/label"
 import {
     Sheet,
     SheetClose,
@@ -45,7 +45,7 @@ import { Trash2 } from "lucide-react"
 import { Textarea } from "@/components/ui/textarea"
 
 import upperCaseFunction from '@/customFunctions/upperCaseFunction';
-import { databases } from '@/appwrite/config';
+//import { databases } from '@/appwrite/config';
 import { Models } from 'appwrite';
 import db from '@/appwrite/databases';
 
@@ -73,7 +73,7 @@ const CategoriesPage = () => {
         },
     });
 
-    const columns: ColumnDef<Models.Document[]>[] = [
+    const columns: ColumnDef<Models.Document[] | any>[] = [
         {
             accessorKey: "thePosition",
             header: "#",
@@ -220,9 +220,9 @@ const CategoriesPage = () => {
         formToCreateCategory?.setValue('name', theCategory?.name);
         formToCreateCategory?.setValue('sub_categories', result);
 
-        setSelectedCategory(prev => prev = theCategory)
-        setIsUpdateActive(prev => prev = true)
-        setIsSheetOpened(prev => prev = true)
+        setSelectedCategory(theCategory)
+        setIsUpdateActive(true)
+        setIsSheetOpened(true)
     }
 
     async function updateCategory(values: z.infer<typeof categoryFormSchema>) {
@@ -254,11 +254,11 @@ const CategoriesPage = () => {
         // Check if this category has products attached 
 
         if (theCategory?.products?.length === 0) {
-            setSelectedCategoryToDelete(prev => prev = theCategory)
-            setCanBeDeletedDialog(prev => prev = true)
+            setSelectedCategoryToDelete(theCategory)
+            setCanBeDeletedDialog(true)
         } else {
-            setSelectedCategoryToDelete(prev => prev = theCategory)
-            setCanNotBeDeletedDialog(prev => prev = true)
+            setSelectedCategoryToDelete(theCategory)
+            setCanNotBeDeletedDialog(true)
         }
     }
 
@@ -270,13 +270,13 @@ const CategoriesPage = () => {
     }
 
     const clearCategoryForm = () => {
-        setIsSheetOpened((prev) => prev = false)
+        setIsSheetOpened(false)
         formToCreateCategory?.reset();
-        setIsUpdateActive(prev => prev = false)
-        setSelectedCategory(prev => prev = null)
-        setCanNotBeDeletedDialog(prev => prev = false)
-        setCanBeDeletedDialog(prev => prev = false)
-        setSelectedCategoryToDelete(prev => prev = null)
+        setIsUpdateActive(false)
+        setSelectedCategory(null)
+        setCanNotBeDeletedDialog(false)
+        setCanBeDeletedDialog(false)
+        setSelectedCategoryToDelete(null)
     };
 
     return (

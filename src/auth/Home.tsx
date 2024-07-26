@@ -22,16 +22,10 @@ import {
 //   XMarkIcon,
 // } from '@heroicons/react/24/outline'
 // import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import {
-    type LucideIcon,
-    CircleUser,
-    LogOut,
-    Menu,
-    Search,
-} from "lucide-react"
+import { CircleUser } from "lucide-react"
 import { Link } from 'react-router-dom'
 
-const currencies = ['CAD', 'USD', 'AUD', 'EUR', 'GBP']
+//const currencies = ['CAD', 'USD', 'AUD', 'EUR', 'GBP']
 const navigation = {
     categories: [
         {

@@ -1,5 +1,4 @@
 import { account } from '@/appwrite/config'
-import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from "@/components/ui/button"
 import useSellifyStore from '@/store/user'

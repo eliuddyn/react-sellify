@@ -85,7 +85,7 @@ const LoginPage = () => {
 
         const promise = account.createEmailPasswordSession(values.email, values.password);
 
-        promise.then(async (response) => {
+        promise.then(async () => {
             //  console.log(response); // Success
 
             setUserSession(await account.get())

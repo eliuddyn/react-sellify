@@ -13,7 +13,7 @@ import { Product } from '@/types/myTypes';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+//import { Label } from "@/components/ui/label"
 import {
     Sheet,
     SheetClose,
@@ -44,7 +44,7 @@ import {
     Card,
     CardContent,
     CardDescription,
-    CardFooter,
+    //CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
@@ -209,7 +209,7 @@ const ProductsPage = () => {
 
         const products = await db.products.list();
         //console.log(products.documents)
-        setAllTheProducts(prev => prev = products.documents)
+        setAllTheProducts(products.documents)
 
     }
 
@@ -235,7 +235,7 @@ const ProductsPage = () => {
 
     const handleCategoryChange = (e: string) => {
         const selectedCategory = allTheCategories?.find((category: any) => category?.$id === e);
-        setAllTheSubCategories(prev => prev = selectedCategory?.sub_categories);
+        setAllTheSubCategories(selectedCategory?.sub_categories);
     };
 
     async function createProduct(values: z.infer<typeof productFormSchema>) {
@@ -284,9 +284,9 @@ const ProductsPage = () => {
         formToCreateProduct?.setValue('status', theProduct?.status);
         formToCreateProduct?.setValue('image', theProduct?.image ? theProduct?.image : '');
 
-        setSelectedProduct(prev => prev = theProduct)
-        setIsUpdateActive(prev => prev = true)
-        setIsSheetOpened(prev => prev = true)
+        setSelectedProduct(theProduct)
+        setIsUpdateActive(true)
+        setIsSheetOpened(true)
     }
 
     async function updateProduct(values: z.infer<typeof productFormSchema>) {
@@ -315,10 +315,10 @@ const ProductsPage = () => {
     }
 
     const clearProductForm = () => {
-        setIsSheetOpened(prev => prev = false)
+        setIsSheetOpened(false)
         formToCreateProduct?.reset();
-        setIsUpdateActive(prev => prev = false)
-        setSelectedProduct(prev => prev = null)
+        setIsUpdateActive(false)
+        setSelectedProduct(null)
     };
 
     return (
@@ -660,7 +660,7 @@ const ProductsPage = () => {
                                                                 control={formToCreateProduct?.control}
                                                                 name="image"
                                                                 render={({ field }) => (
-                                                                    <div className="grid gap-2">
+                                                                    <div className="grid gap-2" {...field}>
                                                                         <img
                                                                             alt="Product image"
                                                                             className="w-full rounded-md object-cover border border-dashed"
