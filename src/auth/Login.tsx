@@ -88,6 +88,10 @@ const LoginPage = () => {
         promise.then(async () => {
             //  console.log(response); // Success
 
+            const { labels } = await account.get()
+
+            localStorage.setItem('slUserRole', labels[0] as string);
+
             setUserSession(await account.get())
             navigate('/dashboard')
 

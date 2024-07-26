@@ -8,5 +8,5 @@ export const PublicRoute = () => {
 
     //console.log(userSession)
 
-    return userSession === null ? <Outlet /> : userSession?.prefs?.role === 'Admin' ? <Navigate to="/dashboard" /> : <Navigate to="/my_dashboard" />
+    return userSession === null ? <Outlet /> : localStorage.getItem('slUserRole') as string === 'Admin' ? <Navigate to="/dashboard" /> : <Navigate to="/my_dashboard" />
 }
