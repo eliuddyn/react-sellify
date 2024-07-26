@@ -172,14 +172,14 @@ const AdminLayout = () => {
                                     </div>
                                 </div>
 
-                                <nav className="grid gap-2 text-lg font-medium">
+                                <nav className="grid gap-2 text-lg font-medium px-4">
                                     {adminNavigation.map((item) => (
                                         <Link
                                             key={item.title}
                                             to={item.url}
                                             className={cn(
                                                 item.url === location.pathname ? 'text-white bg-blue-600' : 'text-gray-200 hover:text-blue-400',
-                                                "mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 transition-all"
+                                                "flex items-center gap-4 rounded-xl px-3 py-2 transition-all"
                                             )}
                                         >
                                             <item.icon className="h-5 w-5" />
