@@ -95,6 +95,7 @@ const LoginPage = () => {
             setUserSession(await account.get())
             navigate('/dashboard')
 
+
         }, function (error) {
             setLoading(false);
             console.log(error); // Failure
