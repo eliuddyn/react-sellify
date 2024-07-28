@@ -1,20 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from 'react'
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom'
-import {
-    CircleUser,
-    Menu,
-    Search,
-} from "lucide-react"
-//import { Badge } from "@/components/ui/badge"
+import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
-// import {
-//     Card,
-//     CardContent,
-//     CardDescription,
-//     CardHeader,
-//     CardTitle,
-// } from "@/components/ui/card"
+import {
+    Avatar,
+    AvatarFallback,
+    AvatarImage,
+} from "@/components/ui/avatar"
 import {
     AlertDialog,
     AlertDialogAction,
@@ -32,25 +25,11 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import useSellifyStore from '@/store/user'
 import { account } from '@/appwrite/config'
 import { adminNavigation } from './routes'
 import { cn } from './utils'
-
-// interface LoggedUserInfo {
-//     names: string;
-//     lastnames?: string;
-//     userID?: string;
-//     gender?: string;
-//     role: string;
-//     navigation: {
-//       title: string;
-//       icon: LucideIcon;
-//       url: string;
-//     }[];
-//   };
 
 const AdminLayout = () => {
 
@@ -106,7 +85,7 @@ const AdminLayout = () => {
                                             "flex items-center gap-3 rounded-lg px-3 py-2 transition-all"
                                         )}
                                     >
-                                        <item.icon className="h-4 w-4" />
+                                        <item.icon className="h-5 w-5" />
                                         {item.title}
                                     </Link>
                                 ))}
@@ -188,7 +167,7 @@ const AdminLayout = () => {
                                     ))}
                                 </nav>
 
-                                <div className="mt-auto">
+                                {/* <div className="mt-auto">
 
                                     {/* <Button
                                         size="sm"
@@ -197,9 +176,9 @@ const AdminLayout = () => {
                                     >
                                         <LogOut className="h-5 w-5 shrink-0" aria-hidden="true" />
                                         <span>SALIR</span>
-                                    </Button> */}
+                                    </Button> 
 
-                                    {/* <Card>
+                                    <Card>
                                     <CardHeader>
                                         <CardTitle>Upgrade to Pro</CardTitle>
                                         <CardDescription>
@@ -212,13 +191,13 @@ const AdminLayout = () => {
                                             Upgrade
                                         </Button>
                                     </CardContent>
-                                </Card> */}
-                                </div>
+                                </Card> 
+                                </div> */}
 
                             </SheetContent>
                         </Sheet>
-                        <div className="w-full flex-1">
-                            <form>
+                        <div className="w-full flex items-center justify-end">
+                            {/* <form>
                                 <div className="relative">
                                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                                     <Input
@@ -227,33 +206,41 @@ const AdminLayout = () => {
                                         className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
                                     />
                                 </div>
-                            </form>
-                        </div>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="secondary" size="icon" className="rounded-full">
-                                    <CircleUser className="h-5 w-5" />
-                                    <span className="sr-only">Toggle user menu</span>
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                {/* <DropdownMenuItem>Settings</DropdownMenuItem>
+                            </form> */}
+
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    {/* <Button variant="secondary" size="icon" className="rounded-full">
+                                        <CircleUser className="h-5 w-5" />
+                                        <span className="sr-only">Toggle user menu</span>
+                                    </Button> */}
+                                    <Avatar className='cursor-pointer'>
+                                        <AvatarImage src={undefined} alt="Foto" />
+                                        <AvatarFallback className='text-gray-900 font-bold bg-amber-400'>
+                                            <span className=''>A</span>
+                                        </AvatarFallback>
+                                    </Avatar>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                    <DropdownMenuLabel className='text-center'>Mi Cuenta</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    {/* <DropdownMenuItem>Settings</DropdownMenuItem>
                                 <DropdownMenuItem>Support</DropdownMenuItem> */}
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem className='cursor-pointer'>
-                                    <button
-                                        className='w-full text-start'
-                                        onClick={() => setAlertDialogForLogout(true)}
-                                    >
-                                        Salir
-                                    </button>
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                                    {/* <DropdownMenuSeparator /> */}
+                                    <DropdownMenuItem className='cursor-pointer'>
+                                        <button
+                                            className='w-full text-center text-red-700 font-bold'
+                                            onClick={() => setAlertDialogForLogout(true)}
+                                        >
+                                            Salir
+                                        </button>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
+
                     </header>
-                    <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+                    <main className="bg-slate-50 flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
                         <Outlet />
                     </main>
                 </div>

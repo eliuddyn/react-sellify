@@ -1,4 +1,5 @@
-import { useState } from 'react'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form';
 import { z } from 'zod'
@@ -35,6 +36,7 @@ import upperCaseFunction from '@/customFunctions/upperCaseFunction';
 import { account } from '@/appwrite/config';
 import { ID } from 'appwrite';
 import useSellifyStore from '@/store/user';
+import db from '@/appwrite/databases';
 
 const RegisterSchema = z.object({
     names: z.string({ required_error: "Requerido" }).min(2, '2 caracteres mínimo'),
@@ -44,11 +46,17 @@ const RegisterSchema = z.object({
     password: z.string({ required_error: "Requerido" }).min(8, '8 caracteres mínimo'),
 })
 
+const genderList = [
+    { name: 'MASCULINO', value: 'M' },
+    { name: 'FEMENINO', value: 'F' },
+]
+
 const RegisterPage = () => {
 
     const navigate = useNavigate();
     const setUserSession = useSellifyStore((state) => state.setUserSession)
     const [isValidCredentials, setIsValidCredentials] = useState<boolean>(false);
+    const [theGenders, setTheGenders] = useState<any>([]);
 
     const userRegisterForm = useForm<z.infer<typeof RegisterSchema>>({
         resolver: zodResolver(RegisterSchema),
@@ -62,8 +70,14 @@ const RegisterPage = () => {
         },
     });
 
+    useEffect(() => {
+        setTheGenders(genderList)
+    }, [])
+
+
     async function registerUser(values: z.infer<typeof RegisterSchema>) {
 
+        let myAppUserId: string = '';
 
         const myCustomer = {
             names: upperCaseFunction(values?.names),
@@ -76,18 +90,38 @@ const RegisterPage = () => {
         // console.log(myCustomer)
 
         try {
-            await account.create(
+            const result = await account.create(
                 ID.unique(),
                 myCustomer.email,
                 myCustomer.password,
                 myCustomer.names + ' ' + myCustomer.lastnames
             );
 
+            myAppUserId = result?.$id;
+
             const promise = account.createEmailPasswordSession(myCustomer.email, myCustomer.password);
 
             promise.then(async () => {
                 // Success
                 await account.updatePrefs({ role: 'Customer' });
+
+                try {
+
+                    const myCustomer2 = {
+                        names: upperCaseFunction(values?.names),
+                        lastnames: upperCaseFunction(values?.lastnames),
+                        gender: upperCaseFunction(values?.gender),
+                        email: values?.email,
+                        app_user_ID: myAppUserId
+                    }
+
+                    await db.customers.create(myCustomer2);
+
+                } catch (error) {
+                    console.log(error)
+                }
+
+                logoutUser()
 
             }, function (error) {
                 // setLoading(false);
@@ -105,8 +139,8 @@ const RegisterPage = () => {
             })
 
             setTimeout(() => {
-                logoutUser()
-            }, 1500);
+                navigate('/login')
+            }, 2000);
 
         } catch (error) {
             console.log(error)
@@ -116,7 +150,6 @@ const RegisterPage = () => {
     const logoutUser = async () => {
         await account.deleteSession('current')
         setUserSession(null);
-        navigate('/login')
     }
 
     return (
@@ -184,13 +217,16 @@ const RegisterPage = () => {
                                                 <FormLabel className='text-base font-bold text-[#143a63]'>Género</FormLabel>
                                                 <Select onValueChange={(e) => field.onChange(e)} defaultValue={field.value}>
                                                     <FormControl>
-                                                        <SelectTrigger className="w-full h-10 font-medium dark:text-gray-700 bg-background dark:bg-slate-300 focus-visible:ring-teal-600">
+                                                        <SelectTrigger className="w-full h-10 font-medium dark:text-gray-700 bg-background dark:bg-slate-300">
                                                             <SelectValue placeholder='Selecciona tu género' />
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent className="max-h-[--radix-select-content-available-height]">
-                                                        <SelectItem value="F">FEMENINO</SelectItem>
-                                                        <SelectItem value="M">MASCULINO</SelectItem>
+                                                        {theGenders.map((gender: any) => (
+                                                            <SelectItem key={gender?.value as string} value={gender?.value as string}>
+                                                                {gender?.name as string}
+                                                            </SelectItem>
+                                                        ))}
                                                     </SelectContent>
                                                 </Select>
                                                 <FormMessage className='text-red-800' />

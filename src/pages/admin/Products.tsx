@@ -9,11 +9,9 @@ import { randomCode } from 'generate-random-code';
 import PageHeader from '@/lib/PageHeader'
 import MyTable from '@/lib/MyTable'
 import { SquarePen } from 'lucide-react';
-import { Product } from '@/types/myTypes';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input"
-//import { Label } from "@/components/ui/label"
 import {
     Sheet,
     SheetClose,
@@ -58,28 +56,26 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
-import {
-    ToggleGroup,
-    ToggleGroupItem,
-} from "@/components/ui/toggle-group"
-import { Models } from 'appwrite';
+import { ID, Models } from 'appwrite';
 import db from '@/appwrite/databases';
 import upperCaseFunction from '@/customFunctions/upperCaseFunction';
 import { cn } from '@/lib/utils';
+import { storage } from '@/appwrite/config';
 
 const productFormSchema = z.object({
-    name: z.string({ required_error: "Requerido" }).min(2, { message: "Mínimo 2 caracteres" }),
-    description: z.string({ required_error: "Requerido" }).min(2, { message: "Mínimo 2 caracteres" }),
-    price: z.coerce.number({ required_error: "Requerido" }).positive(),
-    category: z.string({ required_error: "Requerido" }),
-    sub_category: z.string({ required_error: "Requerido" }).min(2, { message: "Mínimo 2 caracteres" }),
-    size: z.string().optional(),
-    weight_unit: z.string().optional(),
-    weight: z.coerce.number({ required_error: "Requerido" }).positive(),
-    quantity: z.coerce.number({ required_error: "Requerido" }).positive(),
+    name: z.string({ required_error: "Requerido" }).min(1, { message: "Requerido" }),
+    description: z.string({ required_error: "Requerido" }).min(1, { message: "Requerido" }),
+    price: z.coerce.number({ required_error: "Requerido" }).positive('Debe ser mayor a 0'),
+    category: z.string({ required_error: "Requerido" }), //.min(1, { message: "Requerido" }),
+    sub_category: z.string({ required_error: "Requerido" }).min(1, { message: "Requerido" }),
+    weight_unit: z.string({ required_error: "Requerido" }).min(1, { message: "Requerido" }),
+    weight: z.coerce.number({ required_error: "Requerido" }).positive('Debe ser mayor a 0'),
+    quantity: z.coerce.number({ required_error: "Requerido" }).positive('Debe ser mayor a 0'),
     sku: z.string({ required_error: "Requerido" }),
-    status: z.string({ required_error: "Requerido" }),
-    image: z.string().optional(),
+    status: z.string({ required_error: "Requerido" }).min(1, { message: "Requerido" }),
+    image: z.instanceof(File).refine((file) => file.size < 7000000, {
+        message: 'La imagen debe ser menor a 7MB.',
+    }).optional(),
 })
 
 const ProductsPage = () => {
@@ -90,6 +86,8 @@ const ProductsPage = () => {
     const [isUpdateActive, setIsUpdateActive] = useState<boolean | undefined>(false);
     const [selectedProduct, setSelectedProduct] = useState<Models.Document | null>(null);
     const [isSheetOpened, setIsSheetOpened] = useState<boolean>(false);
+    const [image, setImage] = useState<any>(null);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const formToCreateProduct = useForm<z.infer<typeof productFormSchema>>({
         resolver: zodResolver(productFormSchema),
@@ -100,17 +98,16 @@ const ProductsPage = () => {
             price: 0,
             category: '',
             sub_category: '',
-            size: 'n/a',
             weight_unit: '',
             weight: 0,
             quantity: 0,
             sku: '',
             status: '',
-            image: '',
+            image: undefined,
         },
     });
 
-    const columns: ColumnDef<Product>[] = [
+    const columns: ColumnDef<Models.Document[] | any>[] = [
         {
             accessorKey: "thePosition",
             header: "#",
@@ -119,20 +116,51 @@ const ProductsPage = () => {
             ),
         },
         {
+            accessorKey: "image",
+            header: "Imagen",
+            cell: ({ row }) => (
+                <img
+                    alt="Imagen del Producto"
+                    className="w-28 h-20 rounded-md object-cover"
+                    src={row?.original?.image === '' ? '/placeholder.png' : row?.original?.image}
+                />
+            ),
+        },
+        {
             accessorKey: "name",
             header: "Producto",
+            cell: ({ row }) => (
+                <span className='font-bold text-xs'>{row?.original?.name}</span>
+            ),
         },
         {
             accessorKey: "status",
             header: "Estado",
+            cell: ({ row }) => (
+                // <Badge variant={row?.original?.status === 'DISPONIBLE' ? 'available' : 'destructive'}>
+                //     <span className='text-xs'>{row?.original?.status}</span>
+                // </Badge>
+                <span className={cn(
+                    row?.original?.status === 'DISPONIBLE' ? 'text-teal-600' : 'text-red-500',
+                    'text-xs font-bold'
+                )}>
+                    {row?.original?.status}
+                </span>
+            ),
         },
         {
             accessorKey: "price",
             header: "Precio",
+            cell: ({ row }) => (
+                <span className='font-bold text-xs'>{row?.original?.price}</span>
+            ),
         },
         {
             accessorKey: "sales",
             header: "Ventas",
+            cell: ({ row }) => (
+                <span className='font-bold text-xs'>{row?.original?.sales}</span>
+            ),
         },
         {
             accessorKey: "sku",
@@ -208,7 +236,7 @@ const ProductsPage = () => {
     const getAllProducts = async () => {
 
         const products = await db.products.list();
-        //console.log(products.documents)
+        // console.log(products.documents)
         setAllTheProducts(products.documents)
 
     }
@@ -228,8 +256,6 @@ const ProductsPage = () => {
             return 0;
         });
 
-        //console.log(categoriesByName)
-
         setAllTheCategories(categoriesByName)
     }
 
@@ -238,9 +264,51 @@ const ProductsPage = () => {
         setAllTheSubCategories(selectedCategory?.sub_categories);
     };
 
+    const getImage = async (file: File | undefined) => {
+        setImage(await convertImageToBase64(file))
+    }
+
+    const convertImageToBase64 = (file: File | undefined) => {
+        return new Promise((resolve, reject) => {
+            const fileReader = new FileReader();
+            if (!file) {
+                alert("Please select an image");
+            } else {
+                fileReader.readAsDataURL(file);
+                fileReader.onload = () => {
+                    resolve(fileReader.result);
+                };
+            }
+            fileReader.onerror = (error) => {
+                reject(error);
+            };
+        });
+    };
+
     async function createProduct(values: z.infer<typeof productFormSchema>) {
 
-        //console.log(values)
+        setLoading(true)
+
+        let myImageURL: string = '';
+        let myImageFileId: string = '';
+
+        if (values?.image) {
+
+            const result = await storage.createFile(
+                import.meta.env.VITE_APPWRITE_BUCKET_ID as string, // bucketId
+                ID.unique(), // fileId
+                values?.image as File, // file
+            );
+
+            myImageFileId = result?.$id
+
+            const preview = await storage.getFileView(
+                import.meta.env.VITE_APPWRITE_BUCKET_ID as string, // bucketId
+                result?.$id, // fileId
+            );
+
+            myImageURL = preview?.href
+        }
 
         const myProduct = {
             name: upperCaseFunction(values?.name),
@@ -248,13 +316,13 @@ const ProductsPage = () => {
             price: values?.price,
             category: values?.category,
             sub_category: values?.sub_category,
-            size: values?.size,
             weight_unit: values?.weight_unit,
             weight: values?.weight,
             quantity: values?.quantity,
             sku: 'SL' + randomCode(10, { numericOnly: true }),
             status: values?.status,
-            image: values?.image,
+            image_file_id: myImageFileId,
+            image: myImageURL,
             created_at: new Date()
         }
 
@@ -277,13 +345,12 @@ const ProductsPage = () => {
         formToCreateProduct?.setValue('price', theProduct?.price);
         formToCreateProduct?.setValue('category', theProduct?.category?.$id, { shouldValidate: true });
         formToCreateProduct?.setValue('sub_category', theProduct?.sub_category, { shouldValidate: true });
-        formToCreateProduct?.setValue('size', theProduct?.size);
         formToCreateProduct?.setValue('weight_unit', theProduct?.weight_unit);
         formToCreateProduct?.setValue('weight', theProduct?.weight);
         formToCreateProduct?.setValue('quantity', theProduct?.quantity);
         formToCreateProduct?.setValue('status', theProduct?.status);
-        formToCreateProduct?.setValue('image', theProduct?.image ? theProduct?.image : '');
 
+        setImage(theProduct?.image)
         setSelectedProduct(theProduct)
         setIsUpdateActive(true)
         setIsSheetOpened(true)
@@ -291,18 +358,46 @@ const ProductsPage = () => {
 
     async function updateProduct(values: z.infer<typeof productFormSchema>) {
 
+        setLoading(true)
+
+        let myImageURL: string = selectedProduct?.image;
+        let myImageFileId: string = '';
+
+        if (values?.image) {
+
+            const result = await storage.createFile(
+                import.meta.env.VITE_APPWRITE_BUCKET_ID as string, // bucketId
+                ID.unique(), // fileId
+                values?.image as File, // file
+            );
+
+            myImageFileId = result?.$id
+
+            const preview = await storage.getFileView(
+                import.meta.env.VITE_APPWRITE_BUCKET_ID as string, // bucketId
+                result?.$id, // fileId
+            );
+
+            myImageURL = preview?.href
+
+            await storage.deleteFile(
+                import.meta.env.VITE_APPWRITE_BUCKET_ID as string, // bucketId
+                selectedProduct?.image_file_id, // fileId
+            );
+        }
+
         const myProduct = {
             name: upperCaseFunction(values?.name),
             description: values?.description,
             price: values?.price,
             category: values?.category,
             sub_category: values?.sub_category,
-            size: values?.size,
             weight_unit: values?.weight_unit,
             weight: values?.weight,
             quantity: values?.quantity,
             status: values?.status,
-            image: values?.image
+            image: myImageURL,
+            image_file_id: myImageFileId,
         }
 
         try {
@@ -319,6 +414,8 @@ const ProductsPage = () => {
         formToCreateProduct?.reset();
         setIsUpdateActive(false)
         setSelectedProduct(null)
+        setImage(null)
+        setLoading(false)
     };
 
     return (
@@ -381,7 +478,7 @@ const ProductsPage = () => {
                                                         <Button type="button" className='bg-red-500 hover:bg-red-700 text-gray-100' onClick={clearProductForm}>Cancelar</Button>
                                                     </SheetClose>
                                                     <Button type="submit" variant='default'>
-                                                        {isUpdateActive ? 'Actualizar' : 'Crear Producto'}
+                                                        {isUpdateActive ? loading ? 'Actualizando...' : 'Actualizar' : loading ? 'Agregando...' : 'Crear Producto'}
                                                     </Button>
                                                 </div>
                                             </div>
@@ -447,13 +544,12 @@ const ProductsPage = () => {
                                                             <Table className='overflow-x-auto'>
                                                                 <TableHeader>
                                                                     <TableRow>
-                                                                        <TableHead className='w-20 font-bold text-gray-700'>Cantidad</TableHead>
-                                                                        <TableHead className='w-20 font-bold text-gray-700'>Precio</TableHead>
-                                                                        <TableHead className='w-20 font-bold text-gray-700'>Size</TableHead>
+                                                                        <TableHead className='font-bold text-gray-700'>Cantidad</TableHead>
+                                                                        <TableHead className='font-bold text-gray-700'>Precio</TableHead>
                                                                     </TableRow>
                                                                 </TableHeader>
                                                                 <TableBody>
-                                                                    <TableRow>
+                                                                    <TableRow className='hover:bg-transparent'>
 
                                                                         <TableCell>
 
@@ -488,9 +584,9 @@ const ProductsPage = () => {
                                                                             />
                                                                         </TableCell>
 
-                                                                        <TableCell>
+                                                                        {/* <TableCell>
 
-                                                                            {/* SIZE */}
+                                                                            
                                                                             <FormField
                                                                                 control={formToCreateProduct?.control}
                                                                                 name="size"
@@ -518,7 +614,7 @@ const ProductsPage = () => {
                                                                                     </FormItem>
                                                                                 )}
                                                                             />
-                                                                        </TableCell>
+                                                                        </TableCell> */}
                                                                     </TableRow>
                                                                 </TableBody>
                                                             </Table>
@@ -544,7 +640,7 @@ const ProductsPage = () => {
                                                                         <FormItem>
                                                                             <Select onValueChange={(e) => [field.onChange(e), handleCategoryChange(e)]} defaultValue={field.value}>
                                                                                 <FormControl>
-                                                                                    <SelectTrigger className="w-full h-10 font-medium dark:text-gray-700 bg-background dark:bg-slate-300 focus-visible:ring-teal-600">
+                                                                                    <SelectTrigger className="w-full h-10 font-medium dark:text-gray-700 bg-background dark:bg-slate-300">
                                                                                         <SelectValue placeholder='Selecciona una categoría' />
                                                                                     </SelectTrigger>
                                                                                 </FormControl>
@@ -573,7 +669,7 @@ const ProductsPage = () => {
                                                                             <FormLabel className='text-gray-900 font-bold'>Sub-Categoría</FormLabel>
                                                                             <Select onValueChange={(e) => field.onChange(e)} defaultValue={field.value}>
                                                                                 <FormControl>
-                                                                                    <SelectTrigger className="w-full h-10 font-medium dark:text-gray-700 bg-background dark:bg-slate-300 focus-visible:ring-teal-600">
+                                                                                    <SelectTrigger className="w-full h-10 font-medium dark:text-gray-700 bg-background dark:bg-slate-300">
                                                                                         <SelectValue placeholder='Selecciona una sub-categoría' />
                                                                                     </SelectTrigger>
                                                                                 </FormControl>
@@ -614,7 +710,7 @@ const ProductsPage = () => {
                                                                             <FormLabel className='text-gray-900 font-bold'>Unidad</FormLabel>
                                                                             <Select onValueChange={(e) => field.onChange(e)} defaultValue={field.value}>
                                                                                 <FormControl>
-                                                                                    <SelectTrigger className="w-full h-10 font-medium dark:text-gray-700 bg-background dark:bg-slate-300 focus-visible:ring-teal-600">
+                                                                                    <SelectTrigger className="w-full h-10 font-medium dark:text-gray-700 bg-background dark:bg-slate-300">
                                                                                         <SelectValue placeholder='Selecciona la unidad' />
                                                                                     </SelectTrigger>
                                                                                 </FormControl>
@@ -634,7 +730,7 @@ const ProductsPage = () => {
                                                                     name="weight"
                                                                     render={({ field }) => (
                                                                         <FormItem>
-                                                                            <FormLabel className='dark:text-gray-100'>Peso</FormLabel>
+                                                                            <FormLabel className='text-gray-900 font-bold'>Peso</FormLabel>
                                                                             <FormControl>
                                                                                 <Input className='uppercase font-medium' {...field} />
                                                                             </FormControl>
@@ -648,8 +744,7 @@ const ProductsPage = () => {
                                                     </Card>
 
 
-                                                    <Card
-                                                        className="overflow-hidden">
+                                                    <Card className="overflow-hidden">
                                                         <CardHeader>
                                                             <CardTitle>Imagen</CardTitle>
                                                         </CardHeader>
@@ -657,24 +752,43 @@ const ProductsPage = () => {
 
                                                             {/* IMAGE */}
                                                             <FormField
-                                                                control={formToCreateProduct?.control}
+                                                                control={formToCreateProduct.control}
                                                                 name="image"
-                                                                render={({ field }) => (
-                                                                    <div className="grid gap-2" {...field}>
+                                                                render={({ field: { value, onChange, ...fieldProps } }) => (
+                                                                    <div className="grid gap-2">
                                                                         <img
-                                                                            alt="Product image"
-                                                                            className="w-full rounded-md object-cover border border-dashed"
-                                                                            width="300"
-                                                                            height="200"
-                                                                            src="/placeholder.svg"
+                                                                            alt="Imagen del Producto"
+                                                                            className="w-full rounded-md object-cover"
+                                                                            src={image ? image : '/placeholder.png'}
                                                                         />
-                                                                        <div className="grid gap-2">
-                                                                            <Button className='flex items-center justify-center gap-2'>
-                                                                                <Upload className="h-4 w-4 text-white" />
-                                                                                <span className="sr-only">Subir</span>
+
+                                                                        <FormItem>
+                                                                            <FormLabel
+                                                                                htmlFor='upload'
+                                                                                className='cursor-pointer w-full bg-primary text-primary-foreground hover:bg-primary/90 
+                                                                                h-10 px-4 py-2 text-gray-100 font-bold inline-flex items-center justify-center 
+                                                                                whitespace-nowrap rounded-md text-sm ring-offset-background transition-colors 
+                                                                                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring 
+                                                                                focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50'
+                                                                            >
+                                                                                <Upload className="h-4 w-4 text-white mr-2" />
                                                                                 Agregar imagen
-                                                                            </Button>
-                                                                        </div>
+                                                                            </FormLabel>
+                                                                            <Input
+                                                                                {...fieldProps}
+                                                                                className='hidden'
+                                                                                type="file"
+                                                                                placeholder="Imagen"
+                                                                                accept="image/*"
+                                                                                id='upload'
+                                                                                onChange={(event) =>
+                                                                                    [
+                                                                                        onChange(event.target.files && event.target.files[0]),
+                                                                                        getImage(formToCreateProduct.getValues().image)
+                                                                                    ]
+                                                                                }
+                                                                            />
+                                                                        </FormItem>
                                                                     </div>
                                                                 )}
                                                             />
@@ -696,7 +810,7 @@ const ProductsPage = () => {
                                                                     <FormItem>
                                                                         <Select onValueChange={(e) => field.onChange(e)} defaultValue={field.value}>
                                                                             <FormControl>
-                                                                                <SelectTrigger className="w-full h-10 font-medium dark:text-gray-700 bg-background dark:bg-slate-300 focus-visible:ring-teal-600">
+                                                                                <SelectTrigger className="w-full h-10 font-medium dark:text-gray-700 bg-background dark:bg-slate-300">
                                                                                     <SelectValue placeholder='Selecciona el estado' />
                                                                                 </SelectTrigger>
                                                                             </FormControl>
@@ -719,7 +833,7 @@ const ProductsPage = () => {
                                                     <Button type="button" className='bg-red-500 hover:bg-rose-700 text-gray-100 dark:text-gray-100' onClick={clearProductForm}>Cancelar</Button>
                                                 </SheetClose>
                                                 <Button type="submit" variant='default'>
-                                                    {isUpdateActive ? 'Actualizar' : 'Crear Producto'}
+                                                    {isUpdateActive ? loading ? 'Actualizando...' : 'Actualizar' : loading ? 'Agregando...' : 'Crear Producto'}
                                                 </Button>
                                             </div>
                                         </div>

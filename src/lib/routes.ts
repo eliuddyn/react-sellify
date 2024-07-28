@@ -25,15 +25,15 @@ export const adminNavigation = [
         icon: Package2,
     },
     {
-        title: 'Órdenes',
-        url: '/ordenes',
-        icon: ShoppingCart,
-    },
-    {
         title: 'Clientes',
         url: '/clientes',
         icon: Users,
     },
+    {
+        title: 'Órdenes',
+        url: '/ordenes',
+        icon: ShoppingCart,
+    }
 ]
 
 export const customerNavigation = [

@@ -38,7 +38,6 @@ const LoginPage = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [isValidCredentials, setIsValidCredentials] = useState<boolean>(false);
 
-    //const userSession = useSellifyStore((state) => state.userSession)
     const setUserSession = useSellifyStore((state) => state.setUserSession)
 
     const userLoginForm = useForm<z.infer<typeof LoginSchema>>({
@@ -133,7 +132,7 @@ const LoginPage = () => {
 
                                 <div className="grid grid-cols-1 gap-4">
 
-                                    {/* CEDULA */}
+                                    {/* EMAIL */}
                                     <FormField
                                         control={userLoginForm.control}
                                         name="email"
@@ -164,11 +163,11 @@ const LoginPage = () => {
                                     />
                                 </div>
 
-                                <div className="mt-4 text-end text-sm">
+                                {/* <div className="mt-4 text-end text-sm">
                                     <Link to="/reset-password" className="text-blue-700 hover:text-[#143a63] font-bold">
                                         Olvidé mi contraseña
                                     </Link>
-                                </div>
+                                </div> */}
 
                                 <div className='pt-8 grid grid-cols-2 justify-strech gap-1'>
                                     <Button type="button" className='bg-blue-500' onClick={() => addUserToInputs('ADMIN')}>Admin</Button>

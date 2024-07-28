@@ -8,7 +8,7 @@ import CustomerLayout from "./lib/CustomerLayout";
 import HomePage from "./auth/Home";
 import RegisterPage from "./auth/Register";
 import LoginPage from "./auth/Login";
-import ResetPasswordPage from "./auth/ResetPassword";
+//import ResetPasswordPage from "./auth/ResetPassword";
 
 import AdminDashboardPage from "./pages/admin/AdminDashboard";
 import ProductsPage from "./pages/admin/Products";
@@ -33,7 +33,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          {/* <Route path="/reset-password" element={<ResetPasswordPage />} /> */}
         </Route>
 
         <Route element={<ProtectedRoute />}>

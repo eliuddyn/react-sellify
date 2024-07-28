@@ -105,11 +105,11 @@ const MyTable = ({ myData, myColumns, rowsName }: TableProps) => {
                 />
             </div>
 
-            <div className="bg-gray-200 dark:bg-slate-700 rounded-lg border-y border-slate-300 dark:border-gray-700">
+            <div className="bg-slate-200 dark:bg-slate-700 rounded-lg border border-slate-400 dark:border-gray-700">
                 <Table>
                     <TableHeader>
                         {table?.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id} className='border-b  border-slate-300'>
+                            <TableRow key={headerGroup.id} className='border-b border-slate-400'>
                                 {headerGroup.headers.map((header) => {
                                     return (
                                         <TableHead key={header.id} className='text-gray-900 dark:text-gray-200 font-semibold text-sm'>
@@ -133,7 +133,7 @@ const MyTable = ({ myData, myColumns, rowsName }: TableProps) => {
                                     <TableRow
                                         key={row.id}
                                         data-state={row?.getIsSelected() && "selected"}
-                                        className='text-sm hover:bg-slate-300 dark:hover:bg-slate-600 border border-slate-300'
+                                        className='text-sm hover:bg-slate-300 dark:hover:bg-slate-600 border-y border-slate-400'
                                     >
                                         {row?.getVisibleCells().map((cell) => (
                                             <TableCell key={cell.id} className='font-normal text-gray-800 dark:text-gray-300'>
@@ -152,7 +152,7 @@ const MyTable = ({ myData, myColumns, rowsName }: TableProps) => {
                     </TableBody>
                 </Table>
 
-                <div className="rounded-b-lg flex items-center justify-end space-x-2 px-2 py-2 border-t border-slate-300">
+                <div className="rounded-b-lg flex items-center justify-end space-x-2 px-2 py-2 border-t border-slate-400">
                     <div className="flex-1 text-sm text-gray-700 dark:text-gray-300">
                         {table?.getRowModel().rows.length} /{" "}
                         {table?.getFilteredRowModel().rows.length} {rowsName}
