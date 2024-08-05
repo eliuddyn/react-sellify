@@ -26,6 +26,9 @@ import {
 import { Input } from "@/components/ui/input"
 import { account } from '@/appwrite/config';
 import useSellifyStore from '@/store/user';
+import db from '@/appwrite/databases';
+import { Query } from 'appwrite';
+import { Customer } from '@/types/myTypes';
 
 const LoginSchema = z.object({
     email: z.string({ required_error: "Requerido" }).email({ message: "Correo inválido" }),
@@ -39,6 +42,8 @@ const LoginPage = () => {
     const [isValidCredentials, setIsValidCredentials] = useState<boolean>(false);
 
     const setUserSession = useSellifyStore((state) => state.setUserSession)
+    const setCustomerInSession = useSellifyStore((state) => state.setCustomerInSession)
+    const setCustomerCartItemsInSession = useSellifyStore((state) => state.setCustomerCartItemsInSession)
 
     const userLoginForm = useForm<z.infer<typeof LoginSchema>>({
         resolver: zodResolver(LoginSchema),
@@ -56,6 +61,9 @@ const LoginPage = () => {
     // const logoutUser = async () => {
     //     await account.deleteSession('current')
     //     setUserSession(null);
+    //     setCustomerInSession(null);
+    //     setCustomerCartItemsInSession(null, 'logout')
+    //     localStorage.removeItem('slUserRole')
     //     navigate('/')
     // }
 
@@ -78,7 +86,6 @@ const LoginPage = () => {
     }
 
     async function loginTheUser(values: z.infer<typeof LoginSchema>) {
-        //console.log(values)
 
         setLoading(true);
 
@@ -86,14 +93,28 @@ const LoginPage = () => {
 
         promise.then(async () => {
 
-            // Success
-
-            //console.log(await account.get());
-
-            const { prefs } = await account.get()
-            //const { labels } = await account.get()
+            const { prefs, $id } = await account.get()
 
             localStorage.setItem('slUserRole', prefs?.role as string);
+
+            if (prefs?.role as string === 'Customer') {
+
+                const customers = await db.customers.list([Query.equal('app_user_ID', $id as string)]);
+                //const cartItems = await db.cartItems.list([Query.equal('customerID', customers.documents[0]?.$id as string)]);
+                const cartItems = await db.cartItems.list();
+
+                const myCustomer: Customer = {
+                    id: customers.documents[0]?.$id,
+                    names: customers.documents[0]?.names,
+                    lastnames: customers.documents[0]?.lastnames,
+                    gender: customers.documents[0]?.gender,
+                    email: customers.documents[0]?.email,
+                    app_user_ID: customers.documents[0]?.app_user_ID,
+                }
+
+                setCustomerInSession(myCustomer)
+                setCustomerCartItemsInSession(cartItems.documents, 'login')
+            }
 
             setUserSession(await account.get())
             navigate('/dashboard')
@@ -205,7 +226,7 @@ const LoginPage = () => {
 
                         <div className="mt-4 text-center text-sm">
                             ¿No tienes una cuenta?{" "}
-                            <Link to="/register" className="text-red-700 hover:text-red-900 underline font-bold">
+                            <Link to="/registro" className="text-red-700 hover:text-red-900 underline font-bold">
                                 Regístrate
                             </Link>
                         </div>

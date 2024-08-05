@@ -6,12 +6,26 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ColumnDef } from "@tanstack/react-table";
 import { randomCode } from 'generate-random-code';
-import PageHeader from '@/lib/PageHeader'
-import MyTable from '@/lib/MyTable'
+import { Textarea } from "@/components/ui/textarea"
+import { ID, Models } from 'appwrite';
+import db from '@/appwrite/databases';
+import upperCaseFunction from '@/customFunctions/upperCaseFunction';
+import { cn } from '@/lib/utils';
+import { storage } from '@/appwrite/config';
+import PageHeader from '@/components/PageHeader';
+import MyTable from '@/components/MyTable'
 import { SquarePen } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    //CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
 import {
     Sheet,
     SheetClose,
@@ -38,14 +52,6 @@ import {
 } from "@/components/ui/form"
 import { Upload } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    //CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
 
 import {
     Table,
@@ -55,12 +61,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { Textarea } from "@/components/ui/textarea"
-import { ID, Models } from 'appwrite';
-import db from '@/appwrite/databases';
-import upperCaseFunction from '@/customFunctions/upperCaseFunction';
-import { cn } from '@/lib/utils';
-import { storage } from '@/appwrite/config';
 
 const productFormSchema = z.object({
     name: z.string({ required_error: "Requerido" }).min(1, { message: "Requerido" }),
@@ -68,11 +68,13 @@ const productFormSchema = z.object({
     price: z.coerce.number({ required_error: "Requerido" }).positive('Debe ser mayor a 0'),
     category: z.string({ required_error: "Requerido" }), //.min(1, { message: "Requerido" }),
     sub_category: z.string({ required_error: "Requerido" }).min(1, { message: "Requerido" }),
+    operating_system: z.string({ required_error: "Requerido" }).min(1, { message: "Requerido" }),
     weight_unit: z.string({ required_error: "Requerido" }).min(1, { message: "Requerido" }),
     weight: z.coerce.number({ required_error: "Requerido" }).positive('Debe ser mayor a 0'),
     quantity: z.coerce.number({ required_error: "Requerido" }).positive('Debe ser mayor a 0'),
     sku: z.string({ required_error: "Requerido" }),
     status: z.string({ required_error: "Requerido" }).min(1, { message: "Requerido" }),
+    deal: z.string({ required_error: "Requerido" }).min(1, { message: "Requerido" }),
     image: z.instanceof(File).refine((file) => file.size < 7000000, {
         message: 'La imagen debe ser menor a 7MB.',
     }).optional(),
@@ -98,11 +100,13 @@ const ProductsPage = () => {
             price: 0,
             category: '',
             sub_category: '',
+            operating_system: '',
             weight_unit: '',
             weight: 0,
             quantity: 0,
             sku: '',
             status: '',
+            deal: '',
             image: undefined,
         },
     });
@@ -316,11 +320,13 @@ const ProductsPage = () => {
             price: values?.price,
             category: values?.category,
             sub_category: values?.sub_category,
+            operating_system: values?.operating_system,
             weight_unit: values?.weight_unit,
             weight: values?.weight,
             quantity: values?.quantity,
             sku: 'SL' + randomCode(10, { numericOnly: true }),
             status: values?.status,
+            deal: values?.deal,
             image_file_id: myImageFileId,
             image: myImageURL,
             created_at: new Date()
@@ -345,9 +351,11 @@ const ProductsPage = () => {
         formToCreateProduct?.setValue('price', theProduct?.price);
         formToCreateProduct?.setValue('category', theProduct?.category?.$id, { shouldValidate: true });
         formToCreateProduct?.setValue('sub_category', theProduct?.sub_category, { shouldValidate: true });
+        formToCreateProduct?.setValue('operating_system', theProduct?.operating_system);
         formToCreateProduct?.setValue('weight_unit', theProduct?.weight_unit);
         formToCreateProduct?.setValue('weight', theProduct?.weight);
         formToCreateProduct?.setValue('quantity', theProduct?.quantity);
+        formToCreateProduct?.setValue('deal', theProduct?.deal);
         formToCreateProduct?.setValue('status', theProduct?.status);
 
         setImage(theProduct?.image)
@@ -392,9 +400,11 @@ const ProductsPage = () => {
             price: values?.price,
             category: values?.category,
             sub_category: values?.sub_category,
+            operating_system: values?.operating_system,
             weight_unit: values?.weight_unit,
             weight: values?.weight,
             quantity: values?.quantity,
+            deal: values?.deal,
             status: values?.status,
             image: myImageURL,
             image_file_id: myImageFileId,
@@ -583,115 +593,174 @@ const ProductsPage = () => {
                                                                                 )}
                                                                             />
                                                                         </TableCell>
-
-                                                                        {/* <TableCell>
-
-                                                                            
-                                                                            <FormField
-                                                                                control={formToCreateProduct?.control}
-                                                                                name="size"
-                                                                                render={({ field }) => (
-                                                                                    <FormItem>
-                                                                                        <FormControl>
-                                                                                            <ToggleGroup
-                                                                                                {...field}
-                                                                                                type="single"
-                                                                                                size={"lg"}
-                                                                                                variant="outline"
-                                                                                                className='grid grid-cols-4 gap-x-4 gap-y-2'
-                                                                                            >
-                                                                                                <ToggleGroupItem value="n/a">N/A</ToggleGroupItem>
-                                                                                                <ToggleGroupItem value="s">S</ToggleGroupItem>
-                                                                                                <ToggleGroupItem value="m">M</ToggleGroupItem>
-                                                                                                <ToggleGroupItem value="l">L</ToggleGroupItem>
-                                                                                                <ToggleGroupItem value="xl">XL</ToggleGroupItem>
-                                                                                                <ToggleGroupItem value="2xl">2XL</ToggleGroupItem>
-                                                                                                <ToggleGroupItem value="3xl">3XL</ToggleGroupItem>
-                                                                                                <ToggleGroupItem value="4xl">4XL</ToggleGroupItem>
-                                                                                            </ToggleGroup>
-                                                                                        </FormControl>
-                                                                                        <FormMessage className='text-red-800' />
-                                                                                    </FormItem>
-                                                                                )}
-                                                                            />
-                                                                        </TableCell> */}
                                                                     </TableRow>
                                                                 </TableBody>
                                                             </Table>
                                                         </CardContent>
                                                     </Card>
 
+                                                    <div className='grid grid-cols-2 gap-4'>
+                                                        <Card>
+                                                            <CardHeader>
+                                                                <CardTitle>Categoría</CardTitle>
+                                                            </CardHeader>
+                                                            <CardContent>
+                                                                <div className="grid gap-4 sm:grid-cols-1">
+
+                                                                    {/* CATEGORY */}
+                                                                    <FormField
+                                                                        control={formToCreateProduct?.control}
+                                                                        name="category"
+                                                                        render={({ field }) => (
+                                                                            <FormItem>
+                                                                                <Select onValueChange={(e) => [field.onChange(e), handleCategoryChange(e)]} defaultValue={field.value}>
+                                                                                    <FormControl>
+                                                                                        <SelectTrigger className="w-full h-10 font-medium dark:text-gray-700 bg-background dark:bg-slate-300">
+                                                                                            <SelectValue placeholder='Selecciona una categoría' />
+                                                                                        </SelectTrigger>
+                                                                                    </FormControl>
+                                                                                    <SelectContent className="max-h-[--radix-select-content-available-height]">
+                                                                                        {allTheCategories?.map((category: Models.Document) => (
+                                                                                            <SelectItem
+                                                                                                key={category.$id}
+                                                                                                value={category.$id}
+                                                                                            >
+                                                                                                {category.name}
+                                                                                            </SelectItem>
+                                                                                        ))}
+                                                                                    </SelectContent>
+                                                                                </Select>
+                                                                                <FormMessage className='text-red-800' />
+                                                                            </FormItem>
+                                                                        )}
+                                                                    />
+
+                                                                    {/* SUB_CATEGORY */}
+                                                                    <FormField
+                                                                        control={formToCreateProduct?.control}
+                                                                        name="sub_category"
+                                                                        render={({ field }) => (
+                                                                            <FormItem>
+                                                                                <FormLabel className='text-gray-900 font-bold'>Sub-Categoría</FormLabel>
+                                                                                <Select onValueChange={(e) => field.onChange(e)} defaultValue={field.value}>
+                                                                                    <FormControl>
+                                                                                        <SelectTrigger className="w-full h-10 font-medium dark:text-gray-700 bg-background dark:bg-slate-300">
+                                                                                            <SelectValue placeholder='Selecciona una sub-categoría' />
+                                                                                        </SelectTrigger>
+                                                                                    </FormControl>
+                                                                                    <SelectContent className="max-h-[--radix-select-content-available-height]">
+                                                                                        {allTheSubCategories?.map((subc: string) => (
+                                                                                            <SelectItem
+                                                                                                key={subc}
+                                                                                                value={subc}
+                                                                                            >
+                                                                                                {subc}
+                                                                                            </SelectItem>
+                                                                                        ))}
+                                                                                    </SelectContent>
+                                                                                </Select>
+                                                                                <FormMessage className='text-red-800' />
+                                                                            </FormItem>
+                                                                        )}
+                                                                    />
+                                                                </div>
+                                                            </CardContent>
+                                                        </Card>
+
+
+                                                        <Card>
+                                                            <CardHeader>
+                                                                <CardTitle>Sistema Operativo</CardTitle>
+                                                            </CardHeader>
+                                                            <CardContent>
+
+                                                                {/* OPERATING SYSTEM */}
+                                                                <FormField
+                                                                    control={formToCreateProduct?.control}
+                                                                    name="operating_system"
+                                                                    render={({ field }) => (
+                                                                        <FormItem>
+                                                                            <Select onValueChange={(e) => field.onChange(e)} defaultValue={field.value}>
+                                                                                <FormControl>
+                                                                                    <SelectTrigger className="w-full h-10 font-medium dark:text-gray-700 bg-background dark:bg-slate-300">
+                                                                                        <SelectValue placeholder='Escoga el sistema operativo' />
+                                                                                    </SelectTrigger>
+                                                                                </FormControl>
+                                                                                <SelectContent className="max-h-[--radix-select-content-available-height]">
+                                                                                    <SelectItem value="ANDROID">ANDROID</SelectItem>
+                                                                                    <SelectItem value="IOS">IOS</SelectItem>
+                                                                                </SelectContent>
+                                                                            </Select>
+                                                                            <FormMessage className='text-red-800' />
+                                                                        </FormItem>
+                                                                    )}
+                                                                />
+                                                            </CardContent>
+                                                        </Card>
+                                                    </div>
                                                 </div>
 
                                                 <div className="grid auto-rows-max items-start gap-4">
 
                                                     <Card>
                                                         <CardHeader>
-                                                            <CardTitle>Categoría</CardTitle>
+                                                            <CardTitle>Estado</CardTitle>
                                                         </CardHeader>
                                                         <CardContent>
-                                                            <div className="grid gap-4 sm:grid-cols-1">
 
-                                                                {/* CATERORY */}
-                                                                <FormField
-                                                                    control={formToCreateProduct?.control}
-                                                                    name="category"
-                                                                    render={({ field }) => (
-                                                                        <FormItem>
-                                                                            <Select onValueChange={(e) => [field.onChange(e), handleCategoryChange(e)]} defaultValue={field.value}>
-                                                                                <FormControl>
-                                                                                    <SelectTrigger className="w-full h-10 font-medium dark:text-gray-700 bg-background dark:bg-slate-300">
-                                                                                        <SelectValue placeholder='Selecciona una categoría' />
-                                                                                    </SelectTrigger>
-                                                                                </FormControl>
-                                                                                <SelectContent className="max-h-[--radix-select-content-available-height]">
-                                                                                    {allTheCategories?.map((category: Models.Document) => (
-                                                                                        <SelectItem
-                                                                                            key={category.$id}
-                                                                                            value={category.$id}
-                                                                                        >
-                                                                                            {category.name}
-                                                                                        </SelectItem>
-                                                                                    ))}
-                                                                                </SelectContent>
-                                                                            </Select>
-                                                                            <FormMessage className='text-red-800' />
-                                                                        </FormItem>
-                                                                    )}
-                                                                />
-
-                                                                {/* SUB_CATERORY */}
-                                                                <FormField
-                                                                    control={formToCreateProduct?.control}
-                                                                    name="sub_category"
-                                                                    render={({ field }) => (
-                                                                        <FormItem>
-                                                                            <FormLabel className='text-gray-900 font-bold'>Sub-Categoría</FormLabel>
-                                                                            <Select onValueChange={(e) => field.onChange(e)} defaultValue={field.value}>
-                                                                                <FormControl>
-                                                                                    <SelectTrigger className="w-full h-10 font-medium dark:text-gray-700 bg-background dark:bg-slate-300">
-                                                                                        <SelectValue placeholder='Selecciona una sub-categoría' />
-                                                                                    </SelectTrigger>
-                                                                                </FormControl>
-                                                                                <SelectContent className="max-h-[--radix-select-content-available-height]">
-                                                                                    {allTheSubCategories?.map((subc: string) => (
-                                                                                        <SelectItem
-                                                                                            key={subc}
-                                                                                            value={subc}
-                                                                                        >
-                                                                                            {subc}
-                                                                                        </SelectItem>
-                                                                                    ))}
-                                                                                </SelectContent>
-                                                                            </Select>
-                                                                            <FormMessage className='text-red-800' />
-                                                                        </FormItem>
-                                                                    )}
-                                                                />
-                                                            </div>
+                                                            {/* STATUS */}
+                                                            <FormField
+                                                                control={formToCreateProduct?.control}
+                                                                name="status"
+                                                                render={({ field }) => (
+                                                                    <FormItem>
+                                                                        <Select onValueChange={(e) => field.onChange(e)} defaultValue={field.value}>
+                                                                            <FormControl>
+                                                                                <SelectTrigger className="w-full h-10 font-medium dark:text-gray-700 bg-background dark:bg-slate-300">
+                                                                                    <SelectValue placeholder='Selecciona el estado' />
+                                                                                </SelectTrigger>
+                                                                            </FormControl>
+                                                                            <SelectContent className="max-h-[--radix-select-content-available-height]">
+                                                                                <SelectItem value="DISPONIBLE">DISPONIBLE</SelectItem>
+                                                                                <SelectItem value="NO DISPONIBLE">NO DISPONIBLE</SelectItem>
+                                                                            </SelectContent>
+                                                                        </Select>
+                                                                        <FormMessage className='text-red-800' />
+                                                                    </FormItem>
+                                                                )}
+                                                            />
                                                         </CardContent>
                                                     </Card>
 
+                                                    <Card>
+                                                        <CardHeader>
+                                                            <CardTitle>Oferta</CardTitle>
+                                                        </CardHeader>
+                                                        <CardContent>
+
+                                                            {/* DEAL */}
+                                                            <FormField
+                                                                control={formToCreateProduct?.control}
+                                                                name="deal"
+                                                                render={({ field }) => (
+                                                                    <FormItem>
+                                                                        <Select onValueChange={(e) => field.onChange(e)} defaultValue={field.value}>
+                                                                            <FormControl>
+                                                                                <SelectTrigger className="w-full h-10 font-medium dark:text-gray-700 bg-background dark:bg-slate-300">
+                                                                                    <SelectValue placeholder='¿Es una oferta?' />
+                                                                                </SelectTrigger>
+                                                                            </FormControl>
+                                                                            <SelectContent className="max-h-[--radix-select-content-available-height]">
+                                                                                <SelectItem value="false">NO</SelectItem>
+                                                                                <SelectItem value="true">SI</SelectItem>
+                                                                            </SelectContent>
+                                                                        </Select>
+                                                                        <FormMessage className='text-red-800' />
+                                                                    </FormItem>
+                                                                )}
+                                                            />
+                                                        </CardContent>
+                                                    </Card>
 
                                                     <Card>
                                                         <CardHeader>
@@ -796,36 +865,6 @@ const ProductsPage = () => {
                                                         </CardContent>
                                                     </Card>
 
-                                                    <Card>
-                                                        <CardHeader>
-                                                            <CardTitle>Estado</CardTitle>
-                                                        </CardHeader>
-                                                        <CardContent>
-
-                                                            {/* STATUS */}
-                                                            <FormField
-                                                                control={formToCreateProduct?.control}
-                                                                name="status"
-                                                                render={({ field }) => (
-                                                                    <FormItem>
-                                                                        <Select onValueChange={(e) => field.onChange(e)} defaultValue={field.value}>
-                                                                            <FormControl>
-                                                                                <SelectTrigger className="w-full h-10 font-medium dark:text-gray-700 bg-background dark:bg-slate-300">
-                                                                                    <SelectValue placeholder='Selecciona el estado' />
-                                                                                </SelectTrigger>
-                                                                            </FormControl>
-                                                                            <SelectContent className="max-h-[--radix-select-content-available-height]">
-                                                                                <SelectItem value="DISPONIBLE">DISPONIBLE</SelectItem>
-                                                                                <SelectItem value="NO DISPONIBLE">NO DISPONIBLE</SelectItem>
-                                                                            </SelectContent>
-                                                                        </Select>
-                                                                        <FormMessage className='text-red-800' />
-                                                                    </FormItem>
-                                                                )}
-                                                            />
-                                                        </CardContent>
-                                                    </Card>
-
                                                 </div>
                                             </div>
                                             <div className="flex items-center justify-center gap-2 md:hidden">
@@ -841,26 +880,27 @@ const ProductsPage = () => {
                                 </form>
                             </Form>
                         </SheetContent>
-                    </Sheet>
+                    </Sheet >
 
-                </div>
+                </div >
             </div >
 
             {
-                allTheProducts.length === 0 ? (<div
-                    className="flex flex-1 items-center justify-center rounded-lg">
-                    <div className="flex flex-col items-center gap-1 text-center">
-                        <h3 className="text-2xl font-bold tracking-tight">
-                            No tienes productos
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                            Agrega un producto y empieza a vender.
-                        </p>
-                    </div>
-                </div>
-                ) : (
-                    <MyTable myData={allTheProducts} myColumns={columns} rowsName={allTheProducts?.length === 1 ? 'Producto' : 'Productos'} />
-                )
+                allTheProducts.length === 0 ?
+                    (
+                        <div className="flex flex-1 items-center justify-center rounded-lg">
+                            <div className="flex flex-col items-center gap-1 text-center">
+                                <h3 className="text-2xl font-bold tracking-tight">
+                                    No tienes productos
+                                </h3>
+                                <p className="text-sm text-muted-foreground">
+                                    Agrega un producto y empieza a vender.
+                                </p>
+                            </div>
+                        </div>
+                    ) : (
+                        <MyTable myData={allTheProducts} myColumns={columns} rowsName={allTheProducts?.length === 1 ? 'Producto' : 'Productos'} />
+                    )
             }
 
         </>

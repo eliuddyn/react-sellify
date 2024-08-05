@@ -5,8 +5,8 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ColumnDef } from "@tanstack/react-table";
-import PageHeader from '@/lib/PageHeader'
-import MyTable from '@/lib/MyTable'
+
+import MyTable from '@/components/MyTable'
 import { SquarePen } from 'lucide-react';
 //import { Category, Product } from '@/types/myTypes';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
@@ -41,13 +41,13 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Trash2 } from "lucide-react"
-
 import { Textarea } from "@/components/ui/textarea"
-
+import PageHeader from '@/components/PageHeader';
 import upperCaseFunction from '@/customFunctions/upperCaseFunction';
 //import { databases } from '@/appwrite/config';
 import { Models } from 'appwrite';
 import db from '@/appwrite/databases';
+
 
 const categoryFormSchema = z.object({
     name: z.string({ required_error: "Requerido" }).min(2, { message: "Mínimo 2 caracteres" }),

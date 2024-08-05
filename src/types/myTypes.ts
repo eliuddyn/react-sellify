@@ -1,3 +1,4 @@
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type Json =
     | string
@@ -47,4 +48,14 @@ export type UploadPicture = {
     userId: string
     userTableName: string
     maxFilesToUpload?: number,
+}
+
+//export type Customer = Models.Document & {
+export type Customer = {
+    id: string
+    names: string
+    lastnames: string
+    gender: string
+    email: string
+    app_user_ID: string
 }

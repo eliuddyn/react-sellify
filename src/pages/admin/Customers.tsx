@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react'
 import { ColumnDef } from "@tanstack/react-table";
-import PageHeader from '@/lib/PageHeader'
-import MyTable from '@/lib/MyTable'
+import PageHeader from '@/components/PageHeader';
+import MyTable from '@/components/MyTable'
 import { SquarePen } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Button } from '@/components/ui/button';
