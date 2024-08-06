@@ -59,6 +59,8 @@ const LoginPage = () => {
     // }
 
     const logoutUser = async () => {
+        userLoginForm?.setValue('email', '')
+        userLoginForm?.setValue('password', '')
         await account.deleteSession('current')
         setUserSession(null);
         setCustomerInSession(null);
