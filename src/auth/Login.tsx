@@ -58,14 +58,14 @@ const LoginPage = () => {
     //     console.log(userSession)
     // }
 
-    // const logoutUser = async () => {
-    //     await account.deleteSession('current')
-    //     setUserSession(null);
-    //     setCustomerInSession(null);
-    //     setCustomerCartItemsInSession(null, 'logout')
-    //     localStorage.removeItem('slUserRole')
-    //     navigate('/')
-    // }
+    const logoutUser = async () => {
+        await account.deleteSession('current')
+        setUserSession(null);
+        setCustomerInSession(null);
+        setCustomerCartItemsInSession(null, 'logout')
+        localStorage.removeItem('slUserRole')
+        navigate('/')
+    }
 
     const addUserToInputs = (role: string) => {
 
@@ -212,13 +212,13 @@ const LoginPage = () => {
                                         Check
                                     </Button> */}
 
-                                    {/* <Button
+                                    <Button
                                         variant='destructive'
                                         className='text-lg text-white'
                                         onClick={() => logoutUser()}
                                     >
                                         LOGOUT
-                                    </Button> */}
+                                    </Button>
                                 </div>
 
                             </form>
