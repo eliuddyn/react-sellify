@@ -59,11 +59,11 @@ const LoginPage = () => {
     const logoutUser = async () => {
         userLoginForm?.setValue('email', '')
         userLoginForm?.setValue('password', '')
-        await account.deleteSession('current')
         setUserSession(null);
         setCustomerInSession(null);
         setCustomerCartItemsInSession(null, 'logout')
         localStorage.removeItem('slUserRole')
+        await account.deleteSession('current')
         navigate('/')
     }
 
