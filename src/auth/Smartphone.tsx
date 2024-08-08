@@ -479,7 +479,6 @@ const Smartphone = () => {
                                         null
                                     }
 
-
                                     {/* REVIEW FORM */}
                                     <Sheet open={isSheetOpened} onOpenChange={setIsSheetOpened}>
                                         <SheetTrigger asChild>
@@ -587,9 +586,9 @@ const Smartphone = () => {
                                 <h3 className="sr-only">Recent reviews</h3>
 
                                 <div className="flow-root">
-                                    <div className="-my-12 divide-y divide-gray-200">
+                                    <div className="-my-12">
                                         {allTheReviews.map((review: Models.Document) => (
-                                            <div key={review.$id} className="py-3 px-4 bg-slate-50 border border-gray-200 rounded-xl">
+                                            <div key={review.$id} className="py-3 px-4 my-3 bg-slate-50 border border-gray-200 rounded-xl">
                                                 <div className="flex items-center">
 
                                                     <div className='flex items-center'>
@@ -640,7 +639,7 @@ const Smartphone = () => {
 
                                                     {/* BUTTON TO TRIGGER THE SHEET MENU */}
                                                     <div className='hidden sm:block'>
-                                                        {/* {isTheProductPurchased && !isTheProductReviewed ?
+                                                        {isTheProductPurchased && customerInSession?.id === review?.customer?.$id ?
                                                             (<Button
                                                                 size='sm'
                                                                 variant="outline"
@@ -651,17 +650,6 @@ const Smartphone = () => {
                                                             </Button>)
                                                             :
                                                             null
-                                                        } */}
-
-                                                        {isTheProductReviewed &&
-                                                            <Button
-                                                                size='sm'
-                                                                variant="outline"
-                                                                className='mt-4 bg-indigo-600 hover:bg-indigo-700 text-white hover:text-white text-sm'
-                                                                onClick={() => reviewInfoToFill(selectedReview as Models.Document)}
-                                                            >
-                                                                Edita tu reseña
-                                                            </Button>
                                                         }
                                                     </div>
                                                 </div>
@@ -673,15 +661,17 @@ const Smartphone = () => {
 
                                                 {/* BUTTON TO TRIGGER THE SHEET MENU */}
                                                 <div className='sm:hidden flex items-center justify-end'>
-                                                    {isTheProductReviewed &&
-                                                        <Button
+                                                    {isTheProductPurchased && customerInSession?.id === review?.customer?.$id ?
+                                                        (<Button
                                                             size='sm'
                                                             variant="outline"
                                                             className='mt-4 bg-indigo-600 hover:bg-indigo-700 text-white hover:text-white text-sm'
                                                             onClick={() => reviewInfoToFill(selectedReview as Models.Document)}
                                                         >
                                                             Edita tu reseña
-                                                        </Button>
+                                                        </Button>)
+                                                        :
+                                                        null
                                                     }
                                                 </div>
 
