@@ -1,4 +1,6 @@
-
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from "react"
 import {
     Card,
     CardContent,
@@ -6,58 +8,92 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-
-import { Overview } from './dashboard/overview'
-import { RecentSales } from './dashboard/recent-sales'
+//import { Overview } from './dashboard/overview'
+import RecentSales from './dashboard/recent-sales'
+import PageHeader from "@/components/PageHeader"
+import db from "@/appwrite/databases"
+import { Models, Query } from "appwrite"
+import { formatPrice } from "@/customFunctions/formatPrice"
+import PieChartGender from "./dashboard/PieChartGender"
 
 const AdminDashboardPage = () => {
+
+    const [adminDashboardData, setAdminDashboardData] = useState<any>();
+
+    useEffect(() => {
+        getAdminDashboardData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    const getAdminDashboardData = async () => {
+
+        // GETTING ALL ORDERS
+        const orders = await db.orders.list([Query.orderDesc("orderDate")]);
+
+        let allTotalAmount: number = 0;
+        let allRecentSales: any[] = [];
+
+        orders.documents.forEach((order: Models.Document) => {
+            allTotalAmount += order?.totalAmount
+
+            const myRecentSale = {
+                orderID: order?.$id,
+                customerNames: order?.customer?.names,
+                customerLastnames: order?.customer?.lastnames,
+                customerEmail: order?.customer?.email,
+                customerGender: order?.customer?.gender,
+                orderDate: order?.orderDate,
+                totalAmount: order?.totalAmount,
+            }
+
+            allRecentSales.push(myRecentSale)
+        })
+
+        // GETTING ALL CUSTOMERS
+        const customers = await db.customers.list();
+
+        let totalFemaleCustomers: number = 0;
+        let totalMaleCustomers: number = 0;
+
+        customers.documents.forEach((customer: Models.Document) => {
+            if (customer?.gender === 'F') { totalFemaleCustomers += 1 }
+            if (customer?.gender === 'M') { totalMaleCustomers += 1 }
+        })
+
+        const customerData = {
+            totalCustomers: customers.documents?.length,
+            totalMaleCustomers,
+            totalFemaleCustomers
+        }
+
+        // GETTING ALL PRODUCTS
+        const products = await db.products.list();
+
+        const dashboardData = {
+            totalRevenue: allTotalAmount,
+            totalSales: orders.documents?.length,
+            recentSales: allRecentSales,
+            customers: customerData,
+            totalProducts: products.documents?.length,
+        }
+
+        setAdminDashboardData(dashboardData)
+    }
+
     return (
         <>
-            {/* <div className="md:hidden">
-                <img
-                    src="/examples/dashboard-light.png"
-                    width={1280}
-                    height={866}
-                    alt="Dashboard"
-                    className="block dark:hidden"
-                />
-                <img
-                    src="/examples/dashboard-dark.png"
-                    width={1280}
-                    height={866}
-                    alt="Dashboard"
-                    className="hidden dark:block"
-                />
-            </div> */}
-            <div className="flex-col md:flex">
 
-                {/* <div className="border-b">
-                    <div className="flex h-16 items-center px-4">
-                        <TeamSwitcher />
-                        <MainNav className="mx-6" />
-                        <div className="ml-auto flex items-center space-x-4">
-                            <Search />
-                            <UserNav />
-                        </div>
-                    </div>
-                </div> */}
+            <PageHeader pageName="Dashboard" />
+
+            <div className="flex-col md:flex">
 
                 <div className="flex-1 space-y-4 pt-6">
 
-                    <div className="flex items-center justify-between space-y-2">
-                        <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-                        {/* <div className="flex items-center space-x-2">
-                            <CalendarDateRangePicker />
-                            <Button>Download</Button>
-                        </div> */}
-                    </div>
-
-
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium">
-                                    Total Revenue
+                                    INGRESOS TOTALES
                                 </CardTitle>
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -73,16 +109,13 @@ const AdminDashboardPage = () => {
                                 </svg>
                             </CardHeader>
                             <CardContent>
-                                <div className="text-2xl font-bold">$45,231.89</div>
-                                <p className="text-xs text-muted-foreground">
-                                    +20.1% from last month
-                                </p>
+                                <div className="text-2xl lg:text-xl text-pink-800 font-bold">RD$ {formatPrice(adminDashboardData?.totalRevenue)}</div>
                             </CardContent>
                         </Card>
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium">
-                                    Subscriptions
+                                    CLIENTES
                                 </CardTitle>
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -100,40 +133,13 @@ const AdminDashboardPage = () => {
                                 </svg>
                             </CardHeader>
                             <CardContent>
-                                <div className="text-2xl font-bold">+2350</div>
-                                <p className="text-xs text-muted-foreground">
-                                    +180.1% from last month
-                                </p>
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Sales</CardTitle>
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    className="h-4 w-4 text-muted-foreground"
-                                >
-                                    <rect width="20" height="14" x="2" y="5" rx="2" />
-                                    <path d="M2 10h20" />
-                                </svg>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold">+12,234</div>
-                                <p className="text-xs text-muted-foreground">
-                                    +19% from last month
-                                </p>
+                                <div className="text-2xl text-pink-800 font-bold">{adminDashboardData?.customers?.totalCustomers}</div>
                             </CardContent>
                         </Card>
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium">
-                                    Active Now
+                                    PRODUCTOS
                                 </CardTitle>
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -149,15 +155,51 @@ const AdminDashboardPage = () => {
                                 </svg>
                             </CardHeader>
                             <CardContent>
-                                <div className="text-2xl font-bold">+573</div>
-                                <p className="text-xs text-muted-foreground">
-                                    +201 since last hour
-                                </p>
+                                <div className="text-2xl text-pink-800 font-bold">{adminDashboardData?.totalProducts}</div>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">VENTAS</CardTitle>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    className="h-4 w-4 text-muted-foreground"
+                                >
+                                    <rect width="20" height="14" x="2" y="5" rx="2" />
+                                    <path d="M2 10h20" />
+                                </svg>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl text-pink-800 font-bold">{adminDashboardData?.totalSales}</div>
                             </CardContent>
                         </Card>
                     </div>
 
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-8">
+                    <div className="grid gap-4 md:grid-cols-2">
+                        <PieChartGender data={adminDashboardData?.customers} />
+
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Ventas Recientes</CardTitle>
+                                <CardDescription>
+                                    {/* You made 265 sales this month. */}
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <RecentSales data={adminDashboardData?.recentSales} />
+                            </CardContent>
+                        </Card>
+                    </div>
+
+
+
+                    {/* <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-8">
                         <Card className="col-span-4">
                             <CardHeader>
                                 <CardTitle>Overview</CardTitle>
@@ -168,16 +210,16 @@ const AdminDashboardPage = () => {
                         </Card>
                         <Card className="col-span-4">
                             <CardHeader>
-                                <CardTitle>Recent Sales</CardTitle>
+                                <CardTitle>Ventas Recientes</CardTitle>
                                 <CardDescription>
-                                    You made 265 sales this month.
+                                    
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <RecentSales />
+                                <RecentSales data={adminDashboardData?.recentSales} />
                             </CardContent>
                         </Card>
-                    </div>
+                    </div> */}
 
                 </div>
             </div>

@@ -105,7 +105,7 @@ const MyTable = ({ myData, myColumns, rowsName }: TableProps) => {
                 />
             </div>
 
-            <div className="bg-slate-200 dark:bg-slate-700 rounded-lg border border-slate-400 dark:border-gray-700">
+            <div className="bg-slate-100 dark:bg-slate-700 rounded-lg border border-slate-300 dark:border-gray-700">
                 <Table>
                     <TableHeader>
                         {table?.getHeaderGroups().map((headerGroup) => (
@@ -133,7 +133,7 @@ const MyTable = ({ myData, myColumns, rowsName }: TableProps) => {
                                     <TableRow
                                         key={row.id}
                                         data-state={row?.getIsSelected() && "selected"}
-                                        className='text-sm hover:bg-slate-300 dark:hover:bg-slate-600 border-y border-slate-400'
+                                        className='text-sm hover:bg-slate-200 dark:hover:bg-slate-600 border-y border-slate-400'
                                     >
                                         {row?.getVisibleCells().map((cell) => (
                                             <TableCell key={cell.id} className='font-normal text-gray-800 dark:text-gray-300'>

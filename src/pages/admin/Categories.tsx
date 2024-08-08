@@ -5,14 +5,11 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ColumnDef } from "@tanstack/react-table";
-
 import MyTable from '@/components/MyTable'
 import { SquarePen } from 'lucide-react';
-//import { Category, Product } from '@/types/myTypes';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input"
-//import { Label } from "@/components/ui/label"
 import {
     Sheet,
     SheetClose,
@@ -84,6 +81,9 @@ const CategoriesPage = () => {
         {
             accessorKey: "name",
             header: "Categoría",
+            cell: ({ row }) => (
+                <span className='text-gray-700 font-bold'>{row.original?.name}</span>
+            ),
         },
         {
             accessorKey: "sub_categories",
@@ -108,7 +108,7 @@ const CategoriesPage = () => {
             accessorKey: "products",
             header: "Productos",
             cell: ({ row }) => (
-                <span className='text-red-800 font-bold'>{row.original?.products?.length}</span>
+                <span className='text-gray-800 font-bold'>{row.original?.products?.length}</span>
             ),
         },
         {
@@ -201,7 +201,6 @@ const CategoriesPage = () => {
         } catch (error) {
             console.log(error)
         }
-
     }
 
     const fillCategoryToUpdate = (theCategory: any) => {

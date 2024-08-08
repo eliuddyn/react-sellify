@@ -7,11 +7,7 @@ import MyTable from '@/components/MyTable'
 import { SquarePen } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Button } from '@/components/ui/button';
-import {
-    Avatar,
-    AvatarFallback,
-    AvatarImage,
-} from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Models } from 'appwrite';
 import db from '@/appwrite/databases';
 import { cn } from '@/lib/utils';
@@ -74,14 +70,14 @@ const CustomersPage = () => {
             accessorKey: "names",
             header: "Nombres",
             cell: ({ row }) => (
-                <span className='font-bold text-xs'>{row?.original?.names}</span>
+                <span className='font-bold text-xs text-gray-800'>{row?.original?.names}</span>
             ),
         },
         {
             accessorKey: "lastnames",
             header: "Apellidos",
             cell: ({ row }) => (
-                <span className='font-bold text-xs'>{row?.original?.lastnames}</span>
+                <span className='font-bold text-xs text-gray-800'>{row?.original?.lastnames}</span>
             ),
         },
         {
@@ -100,14 +96,14 @@ const CustomersPage = () => {
             accessorKey: "email",
             header: "Email",
             cell: ({ row }) => (
-                <span className='font-bold text-xs'>{row?.original?.email}</span>
+                <span className='font-bold text-xs text-gray-800'>{row?.original?.email}</span>
             ),
         },
         {
             accessorKey: "orders",
             header: "Órdenes",
             cell: ({ row }) => (
-                <span className='font-bold text-xs text-teal-700'>{row?.original?.orders?.length}</span>
+                <span className='font-bold text-xs text-gray-800'>{row?.original?.orders?.length}</span>
             ),
         },
 
@@ -140,7 +136,7 @@ const CustomersPage = () => {
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                                <p>Editar</p>
+                                <p>Perfil</p>
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
@@ -157,7 +153,6 @@ const CustomersPage = () => {
     const getAllCustomers = async () => {
 
         const customers = await db.customers.list();
-        //console.log(customers.documents)
         setAllTheCustomers(customers.documents)
     }
 

@@ -1,3 +1,5 @@
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -54,10 +56,6 @@ const LoginPage = () => {
         },
     });
 
-    // const checkUserStatus = async () => {
-    //     console.log(userSession)
-    // }
-
     const logoutUser = async () => {
         userLoginForm?.setValue('email', '')
         userLoginForm?.setValue('password', '')
@@ -76,8 +74,13 @@ const LoginPage = () => {
             userLoginForm?.setValue('password', '12345678')
         }
 
-        if (role === 'CLIENTE') {
+        if (role === 'CLIENTE 1') {
             userLoginForm?.setValue('email', 'luisf1828@gmail.com')
+            userLoginForm?.setValue('password', '12345678')
+        }
+
+        if (role === 'CLIENTE 2') {
+            userLoginForm?.setValue('email', 'amdcore@hotmail.com')
             userLoginForm?.setValue('password', '12345678')
         }
 
@@ -95,27 +98,30 @@ const LoginPage = () => {
 
         promise.then(async () => {
 
-            const { prefs, $id } = await account.get()
+            const { prefs } = await account.get()
 
             localStorage.setItem('slUserRole', prefs?.role as string);
 
             if (prefs?.role as string === 'Customer') {
 
-                const customers = await db.customers.list([Query.equal('app_user_ID', $id as string)]);
-                //const cartItems = await db.cartItems.list([Query.equal('customerID', customers.documents[0]?.$id as string)]);
-                const cartItems = await db.cartItems.list();
+                const singleCustomer = await db.customers.get(prefs?.customerDBCollectionID as string);
+
+                const cartItems = await db.cartItems.list([
+                    Query.equal('customer', singleCustomer?.$id as string),
+                    Query.equal("purchased", "NO")
+                ]);
 
                 const myCustomer: Customer = {
-                    id: customers.documents[0]?.$id,
-                    names: customers.documents[0]?.names,
-                    lastnames: customers.documents[0]?.lastnames,
-                    gender: customers.documents[0]?.gender,
-                    email: customers.documents[0]?.email,
-                    app_user_ID: customers.documents[0]?.app_user_ID,
+                    id: singleCustomer?.$id,
+                    names: singleCustomer?.names,
+                    lastnames: singleCustomer?.lastnames,
+                    gender: singleCustomer?.gender,
+                    email: singleCustomer?.email,
+                    app_user_ID: singleCustomer?.app_user_ID,
                 }
 
                 setCustomerInSession(myCustomer)
-                setCustomerCartItemsInSession(cartItems.documents, 'login')
+                setCustomerCartItemsInSession(cartItems?.documents, 'login')
             }
 
             setUserSession(await account.get())
@@ -132,108 +138,104 @@ const LoginPage = () => {
 
     return (
         <>
-            <div className="bg-gradient-to-b from-blue-600 to-violet-500 h-full flex items-center justify-center sm:items-start sm:pt-32 px-4 ">
-                <Card className="mx-auto w-96">
-                    <CardHeader className='flex items-center justify-center'>
+            <div className='grid grid-rows-[1fr] min-h-dvh'>
+                <div className="bg-gradient-to-b from-blue-600 to-violet-500 h-full flex items-center justify-center sm:items-start sm:pt-32 px-4 ">
+                    <Card className="mx-auto w-96">
+                        <CardHeader className='flex items-center justify-center'>
 
-                        <img
-                            className="mx-auto rounded-xl"
-                            width={100}
-                            height={100}
-                            src="/logo.png"
-                            alt="Logo"
-                        />
+                            <img
+                                className="mx-auto rounded-xl"
+                                width={100}
+                                height={100}
+                                src="/logo.png"
+                                alt="Logo"
+                            />
 
-                        <CardTitle className="text-3xl pt-6">Inicia sesión</CardTitle>
-                        <CardDescription>
-                            Accede con tus credenciales.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Form {...userLoginForm}>
-                            <form onSubmit={userLoginForm.handleSubmit(loginTheUser)}>
+                            <CardTitle className="text-3xl pt-6">Inicia sesión</CardTitle>
+                            <CardDescription>
+                                Accede con tus credenciales.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Form {...userLoginForm}>
+                                <form onSubmit={userLoginForm.handleSubmit(loginTheUser)}>
 
-                                <div className="grid grid-cols-1 gap-4">
+                                    <div className="grid grid-cols-1 gap-4">
 
-                                    {/* EMAIL */}
-                                    <FormField
-                                        control={userLoginForm.control}
-                                        name="email"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className='text-base font-bold text-[#143a63]'>Email</FormLabel>
-                                                <FormControl>
-                                                    <Input type='email' className='font-medium text-lg focus-visible:ring-[#143a63]' {...field} />
-                                                </FormControl>
-                                                <FormMessage className='text-red-700' />
-                                            </FormItem>
-                                        )}
-                                    />
+                                        {/* EMAIL */}
+                                        <FormField
+                                            control={userLoginForm.control}
+                                            name="email"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className='text-base font-bold text-[#143a63]'>Email</FormLabel>
+                                                    <FormControl>
+                                                        <Input type='email' className='font-medium text-lg focus-visible:ring-[#143a63]' {...field} />
+                                                    </FormControl>
+                                                    <FormMessage className='text-red-700' />
+                                                </FormItem>
+                                            )}
+                                        />
 
-                                    {/* PASSWORD */}
-                                    <FormField
-                                        control={userLoginForm.control}
-                                        name="password"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className='text-base font-bold text-[#143a63]'>Contraseña</FormLabel>
-                                                <FormControl>
-                                                    <Input type='password' className='font-medium text-lg focus-visible:ring-[#143a63]' {...field} />
-                                                </FormControl>
-                                                <FormMessage className='text-red-700' />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
+                                        {/* PASSWORD */}
+                                        <FormField
+                                            control={userLoginForm.control}
+                                            name="password"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className='text-base font-bold text-[#143a63]'>Contraseña</FormLabel>
+                                                    <FormControl>
+                                                        <Input type='password' className='font-medium text-lg focus-visible:ring-[#143a63]' {...field} />
+                                                    </FormControl>
+                                                    <FormMessage className='text-red-700' />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
 
-                                {/* <div className="mt-4 text-end text-sm">
+                                    {/* <div className="mt-4 text-end text-sm">
                                     <Link to="/reset-password" className="text-blue-700 hover:text-[#143a63] font-bold">
                                         Olvidé mi contraseña
                                     </Link>
                                 </div> */}
 
-                                <div className='pt-8 grid grid-cols-2 justify-strech gap-1'>
-                                    <Button type="button" className='bg-blue-500' onClick={() => addUserToInputs('ADMIN')}>Admin</Button>
-                                    <Button type="button" className='bg-blue-500' onClick={() => addUserToInputs('CLIENTE')}>Cliente</Button>
-                                    {/* <Button type="button" className='bg-red-500' onClick={() => addUserToInputs('DELETE')}>Borrar</Button> */}
-                                </div>
+                                    <div className='pt-8 grid grid-cols-3 justify-strech gap-1'>
+                                        <Button type="button" className='bg-gray-900' onClick={() => addUserToInputs('ADMIN')}>Admin</Button>
+                                        <Button type="button" className='bg-pink-500' onClick={() => addUserToInputs('CLIENTE 1')}>Cliente 1</Button>
+                                        <Button type="button" className='bg-blue-500' onClick={() => addUserToInputs('CLIENTE 2')}>Cliente 2</Button>
+                                        {/* <Button type="button" className='bg-red-500' onClick={() => addUserToInputs('DELETE')}>Borrar</Button> */}
+                                    </div>
 
-                                <div className='pt-8 grid grid-flow-col justify-strech gap-4'>
-                                    <Button
-                                        type="submit"
-                                        className='bg-[#143a63] hover:bg-blue-800 text-lg'
-                                        disabled={loading}
-                                    >
-                                        {loading ? 'Verificando..' : 'Acceder'}
-                                    </Button>
+                                    <div className='pt-8 grid grid-flow-col justify-strech gap-4'>
+                                        <Button
+                                            type="submit"
+                                            className='bg-[#143a63] hover:bg-blue-800 text-lg'
+                                            disabled={loading}
+                                        >
+                                            {loading ? 'Verificando..' : 'Acceder'}
+                                        </Button>
 
-                                    {/* <Button
-                                        className='bg-amber-400 hover:bg-amber-500 text-lg text-black'
-                                        onClick={() => checkUserStatus()}
-                                    >
-                                        Check
-                                    </Button> */}
+                                        <Button
+                                            variant='destructive'
+                                            className='text-lg text-white'
+                                            onClick={() => logoutUser()}
+                                        >
+                                            LOGOUT
+                                        </Button>
+                                    </div>
 
-                                    <Button
-                                        variant='destructive'
-                                        className='text-lg text-white'
-                                        onClick={() => logoutUser()}
-                                    >
-                                        LOGOUT
-                                    </Button>
-                                </div>
+                                </form>
+                            </Form>
 
-                            </form>
-                        </Form>
-
-                        <div className="mt-4 text-center text-sm">
-                            ¿No tienes una cuenta?{" "}
-                            <Link to="/registro" className="text-red-700 hover:text-red-900 underline font-bold">
-                                Regístrate
-                            </Link>
-                        </div>
-                    </CardContent>
-                </Card>
+                            <div className="mt-4 text-center text-sm">
+                                ¿No tienes una cuenta?{" "}
+                                <Link to="/registro" className="text-red-700 hover:text-red-900 underline font-bold">
+                                    Regístrate
+                                </Link>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
 
             {/* INVALID CREDENTIALS ALERT DIALOG */}

@@ -14,9 +14,6 @@ type UserState = {
 
     customerCartItemsInSession: Models.Document[] | any;
     setCustomerCartItemsInSession: (newCustomerCartItems: Models.Document | null, action: string) => void;
-
-    mobileMenuOpen: boolean;
-    setMobileMenuOpen: (mobileMenuOpenState: boolean) => void;
 }
 
 const useSellifyStore = create<UserState>()(
@@ -35,10 +32,6 @@ const useSellifyStore = create<UserState>()(
                 customerCartItemsInSession: null,
                 setCustomerCartItemsInSession: (newCustomerCartItems: Models.Document | any, action: string) => {
 
-                    // console.log(newCustomerCartItems)
-                    // console.log(action)
-                    // console.log(typeof newCustomerCartItems)
-
                     if (action === 'login') {
                         set(({ customerCartItemsInSession: newCustomerCartItems }))
                     }
@@ -53,9 +46,6 @@ const useSellifyStore = create<UserState>()(
                         set(({ customerCartItemsInSession: null }))
                     }
                 },
-
-                mobileMenuOpen: false,
-                setMobileMenuOpen: (mobileMenuOpenState: boolean) => set({ mobileMenuOpen: mobileMenuOpenState }),
             }),
 
             { name: "sellify_zustand_user_Store" }

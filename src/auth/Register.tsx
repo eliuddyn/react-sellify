@@ -87,8 +87,6 @@ const RegisterPage = () => {
             password: values?.password
         }
 
-        // console.log(myCustomer)
-
         try {
             const result = await account.create(
                 ID.unique(),
@@ -103,7 +101,6 @@ const RegisterPage = () => {
 
             promise.then(async () => {
                 // Success
-                await account.updatePrefs({ role: 'Customer' });
 
                 try {
 
@@ -115,7 +112,9 @@ const RegisterPage = () => {
                         app_user_ID: myAppUserId
                     }
 
-                    await db.customers.create(myCustomer2);
+                    const newCustomerCreated = await db.customers.create(myCustomer2);
+
+                    await account.updatePrefs({ role: 'Customer', customerDBCollectionID: newCustomerCreated?.$id as string });
 
                 } catch (error) {
                     console.log(error)
@@ -155,132 +154,133 @@ const RegisterPage = () => {
     return (
 
         <>
-            <div className="bg-gradient-to-b from-blue-600 to-violet-500 h-full flex items-center justify-center sm:items-start sm:pt-32 px-4 ">
-                <Card className="mx-auto w-96 sm:w-[500px]">
-                    <CardHeader className='flex items-center justify-center px-2 pb-4 pt-1'>
+            <div className='grid grid-rows-[1fr] min-h-dvh'>
+                <div className="bg-gradient-to-b from-blue-600 to-violet-500 h-full flex items-center justify-center sm:items-start sm:pt-32 px-4 ">
+                    <Card className="mx-auto w-96 sm:w-[500px]">
+                        <CardHeader className='flex items-center justify-center px-2 pb-4 pt-1'>
 
-                        <img
-                            className="mx-auto rounded-xl"
-                            width={100}
-                            height={100}
-                            src="/logo.png"
-                            alt="Logo"
-                        />
+                            <img
+                                className="mx-auto rounded-xl"
+                                width={100}
+                                height={100}
+                                src="/logo.png"
+                                alt="Logo"
+                            />
 
-                        <CardTitle className="text-3xl pt-4">Regístrate</CardTitle>
-                        <CardDescription>
-                            Ingresa tu información para crear una cuenta.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Form {...userRegisterForm}>
-                            <form onSubmit={userRegisterForm.handleSubmit(registerUser)}>
+                            <CardTitle className="text-3xl pt-4">Regístrate</CardTitle>
+                            <CardDescription>
+                                Ingresa tu información para crear una cuenta.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Form {...userRegisterForm}>
+                                <form onSubmit={userRegisterForm.handleSubmit(registerUser)}>
 
-                                <div className="grid grid-cols-1 gap-3">
+                                    <div className="grid grid-cols-1 gap-3">
 
-                                    {/* NAMES */}
-                                    <FormField
-                                        control={userRegisterForm.control}
-                                        name="names"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className='text-base font-bold text-[#143a63]'>Nombres</FormLabel>
-                                                <FormControl>
-                                                    <Input type='text' className='font-medium text-base uppercase focus-visible:ring-[#143a63]' {...field} />
-                                                </FormControl>
-                                                <FormMessage className='text-red-700 text-xs flex items-center justify-end' />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    {/* LASTNAMES */}
-                                    <FormField
-                                        control={userRegisterForm.control}
-                                        name="lastnames"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className='text-base font-bold text-[#143a63]'>Apellidos</FormLabel>
-                                                <FormControl>
-                                                    <Input type='text' className='font-medium text-base uppercase focus-visible:ring-[#143a63]' {...field} />
-                                                </FormControl>
-                                                <FormMessage className='text-red-700 text-xs flex items-center justify-end' />
-                                            </FormItem>
-                                        )}
-                                    />
-
-                                    {/* GENDER */}
-                                    <FormField
-                                        control={userRegisterForm?.control}
-                                        name="gender"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className='text-base font-bold text-[#143a63]'>Género</FormLabel>
-                                                <Select onValueChange={(e) => field.onChange(e)} defaultValue={field.value}>
+                                        {/* NAMES */}
+                                        <FormField
+                                            control={userRegisterForm.control}
+                                            name="names"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className='text-base font-bold text-[#143a63]'>Nombres</FormLabel>
                                                     <FormControl>
-                                                        <SelectTrigger className="w-full h-10 font-medium dark:text-gray-700 bg-background dark:bg-slate-300">
-                                                            <SelectValue placeholder='Selecciona tu género' />
-                                                        </SelectTrigger>
+                                                        <Input type='text' className='font-medium text-base uppercase focus-visible:ring-[#143a63]' {...field} />
                                                     </FormControl>
-                                                    <SelectContent className="max-h-[--radix-select-content-available-height]">
-                                                        {theGenders.map((gender: any) => (
-                                                            <SelectItem key={gender?.value as string} value={gender?.value as string}>
-                                                                {gender?.name as string}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage className='text-red-800' />
-                                            </FormItem>
-                                        )}
-                                    />
+                                                    <FormMessage className='text-red-700 text-xs flex items-center justify-end' />
+                                                </FormItem>
+                                            )}
+                                        />
 
-                                    {/* EMAIL */}
-                                    <FormField
-                                        control={userRegisterForm.control}
-                                        name="email"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className='text-base font-bold text-[#143a63]'>Correo</FormLabel>
-                                                <FormControl>
-                                                    <Input type='email' className='font-medium text-base focus-visible:ring-[#143a63]' {...field} />
-                                                </FormControl>
-                                                <FormMessage className='text-red-700 text-xs flex items-center justify-end' />
-                                            </FormItem>
-                                        )}
-                                    />
+                                        {/* LASTNAMES */}
+                                        <FormField
+                                            control={userRegisterForm.control}
+                                            name="lastnames"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className='text-base font-bold text-[#143a63]'>Apellidos</FormLabel>
+                                                    <FormControl>
+                                                        <Input type='text' className='font-medium text-base uppercase focus-visible:ring-[#143a63]' {...field} />
+                                                    </FormControl>
+                                                    <FormMessage className='text-red-700 text-xs flex items-center justify-end' />
+                                                </FormItem>
+                                            )}
+                                        />
 
-                                    {/* PASSWORD */}
-                                    <FormField
-                                        control={userRegisterForm.control}
-                                        name="password"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className='text-base font-bold text-[#143a63]'>Contraseña</FormLabel>
-                                                <FormControl>
-                                                    <Input type='password' className='font-medium text-base focus-visible:ring-[#143a63]' {...field} />
-                                                </FormControl>
-                                                <FormMessage className='text-red-700 text-xs flex items-center justify-end' />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
+                                        {/* GENDER */}
+                                        <FormField
+                                            control={userRegisterForm?.control}
+                                            name="gender"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className='text-base font-bold text-[#143a63]'>Género</FormLabel>
+                                                    <Select onValueChange={(e) => field.onChange(e)} defaultValue={field.value}>
+                                                        <FormControl>
+                                                            <SelectTrigger className="w-full h-10 font-medium dark:text-gray-700 bg-background dark:bg-slate-300">
+                                                                <SelectValue placeholder='Selecciona tu género' />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent className="max-h-[--radix-select-content-available-height]">
+                                                            {theGenders.map((gender: any) => (
+                                                                <SelectItem key={gender?.value as string} value={gender?.value as string}>
+                                                                    {gender?.name as string}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormMessage className='text-red-800' />
+                                                </FormItem>
+                                            )}
+                                        />
 
-                                <div className='pt-4 grid grid-flow-col justify-strech gap-4'>
-                                    <Button type="submit" className='bg-[#143a63] text-lg'>Registrarse</Button>
-                                </div>
+                                        {/* EMAIL */}
+                                        <FormField
+                                            control={userRegisterForm.control}
+                                            name="email"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className='text-base font-bold text-[#143a63]'>Correo</FormLabel>
+                                                    <FormControl>
+                                                        <Input type='email' className='font-medium text-base focus-visible:ring-[#143a63]' {...field} />
+                                                    </FormControl>
+                                                    <FormMessage className='text-red-700 text-xs flex items-center justify-end' />
+                                                </FormItem>
+                                            )}
+                                        />
 
-                            </form>
-                        </Form>
+                                        {/* PASSWORD */}
+                                        <FormField
+                                            control={userRegisterForm.control}
+                                            name="password"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className='text-base font-bold text-[#143a63]'>Contraseña</FormLabel>
+                                                    <FormControl>
+                                                        <Input type='password' className='font-medium text-base focus-visible:ring-[#143a63]' {...field} />
+                                                    </FormControl>
+                                                    <FormMessage className='text-red-700 text-xs flex items-center justify-end' />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
 
-                        <div className="mt-4 text-center text-sm">
-                            ¿Ya tienes una cuenta?{" "}
-                            <Link to="/login" className="text-red-700 hover:text-red-900 underline font-bold">
-                                Inicia sesión
-                            </Link>
-                        </div>
-                    </CardContent>
-                </Card>
+                                    <div className='pt-4 grid grid-flow-col justify-strech gap-4'>
+                                        <Button type="submit" className='bg-[#143a63] text-lg'>Registrarse</Button>
+                                    </div>
 
+                                </form>
+                            </Form>
+
+                            <div className="mt-4 text-center text-sm">
+                                ¿Ya tienes una cuenta?{" "}
+                                <Link to="/login" className="text-red-700 hover:text-red-900 underline font-bold">
+                                    Inicia sesión
+                                </Link>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
 
             {/* INVALID CREDENTIALS ALERT DIALOG */}

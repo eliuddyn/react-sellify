@@ -61,6 +61,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { formatPrice } from '@/customFunctions/formatPrice';
 
 const productFormSchema = z.object({
     name: z.string({ required_error: "Requerido" }).min(1, { message: "Requerido" }),
@@ -156,14 +157,14 @@ const ProductsPage = () => {
             accessorKey: "price",
             header: "Precio",
             cell: ({ row }) => (
-                <span className='font-bold text-xs'>{row?.original?.price}</span>
+                <span className='font-bold text-xs text-gray-800'>RD$ {formatPrice(row?.original?.price)}</span>
             ),
         },
         {
             accessorKey: "sales",
             header: "Ventas",
             cell: ({ row }) => (
-                <span className='font-bold text-xs'>{row?.original?.sales}</span>
+                <span className='font-bold text-xs text-gray-800'>{row?.original?.sales}</span>
             ),
         },
         {
@@ -238,11 +239,8 @@ const ProductsPage = () => {
     }, [])
 
     const getAllProducts = async () => {
-
         const products = await db.products.list();
-        // console.log(products.documents)
         setAllTheProducts(products.documents)
-
     }
 
     const getAllCategories = async () => {
@@ -487,7 +485,7 @@ const ProductsPage = () => {
                                                     <SheetClose asChild>
                                                         <Button type="button" className='bg-red-500 hover:bg-red-700 text-gray-100' onClick={clearProductForm}>Cancelar</Button>
                                                     </SheetClose>
-                                                    <Button type="submit" variant='default'>
+                                                    <Button type="submit" className='bg-indigo-600 hover:bg-black'>
                                                         {isUpdateActive ? loading ? 'Actualizando...' : 'Actualizar' : loading ? 'Agregando...' : 'Crear Producto'}
                                                     </Button>
                                                 </div>

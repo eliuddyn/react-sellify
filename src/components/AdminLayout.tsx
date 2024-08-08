@@ -11,6 +11,7 @@ import {
 import {
     AlertDialog,
     AlertDialogAction,
+    AlertDialogDescription,
     AlertDialogCancel,
     AlertDialogContent,
     AlertDialogFooter,
@@ -34,18 +35,15 @@ import { cn } from '@/lib/utils'
 const AdminLayout = () => {
 
     const navigate = useNavigate();
-    //const userSession = useSellifyStore((state) => state.userSession)
     const setUserSession = useSellifyStore((state) => state.setUserSession)
     const [isSheetOpened, setIsSheetOpened] = useState<boolean>(false);
     const [alertDialogForLogout, setAlertDialogForLogout] = useState<boolean>(false);
     const location = useLocation();
 
-    // console.log(userSession)
-
     const logoutUser = async () => {
-        await account.deleteSession('current')
         setUserSession(null);
         localStorage.removeItem('slUserRole')
+        await account.deleteSession('current')
         navigate('/')
     }
 
@@ -242,7 +240,7 @@ const AdminLayout = () => {
                         </div>
 
                     </header>
-                    <main className="bg-slate-50 flex flex-1 flex-col gap-4 p-3 lg:gap-6 lg:p-6">
+                    <main className="bg-white flex flex-1 flex-col gap-4 p-3 lg:gap-6 lg:p-6">
                         <Outlet />
                     </main>
                 </div>
@@ -253,6 +251,7 @@ const AdminLayout = () => {
                 <AlertDialogContent className='bg-gray-300 border border-gray-600 flex flex-col items-center justify-between'>
                     <AlertDialogHeader className=''>
                         <AlertDialogTitle className='text-gray-800 text-2xl text-center'>¿Está seguro de salir?</AlertDialogTitle>
+                        <AlertDialogDescription></AlertDialogDescription>
                     </AlertDialogHeader>
 
                     <AlertDialogFooter>

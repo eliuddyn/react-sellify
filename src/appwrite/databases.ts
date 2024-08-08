@@ -38,6 +38,11 @@ const collections: CollectionType[] = [
         id: import.meta.env.VITE_COLLECTION_ID_ORDERS,
         name: "orders",
     },
+    {
+        dbId: databaseID,
+        id: import.meta.env.VITE_COLLECTION_ID_REVIEWS,
+        name: "reviews",
+    },
 ];
 
 collections.forEach((collection) => {

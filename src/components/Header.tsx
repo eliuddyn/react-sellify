@@ -1,12 +1,8 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { Models } from 'appwrite';
 import { formatPrice } from '@/customFunctions/formatPrice';
 import useSellifyStore from '@/store/user';
-import {
-    Avatar,
-    AvatarFallback,
-    AvatarImage,
-} from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -29,9 +25,20 @@ import {
     Popover,
     PopoverButton,
     PopoverGroup,
-    PopoverPanel
-
+    PopoverPanel,
+    CloseButton
 } from '@headlessui/react'
+import {
+    Dialog,
+    DialogBackdrop,
+    DialogPanel,
+    Tab,
+    TabGroup,
+    TabList,
+    TabPanel,
+    TabPanels,
+} from '@headlessui/react'
+import { CircleX, House } from "lucide-react"
 import { Menu, ShoppingCart } from "lucide-react"
 import { Link, useNavigate } from 'react-router-dom'
 import 'react-multi-carousel/lib/styles.css';
@@ -52,15 +59,15 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
     const customerInSession = useSellifyStore((state) => state.customerInSession)
     const customerCartItemsInSession = useSellifyStore((state) => state.customerCartItemsInSession)
     const setCustomerCartItemsInSession = useSellifyStore((state) => state.setCustomerCartItemsInSession)
-    const setMobileMenuOpen = useSellifyStore((state) => state.setMobileMenuOpen)
     const [alertDialogForLogout, setAlertDialogForLogout] = useState<boolean>(false);
+    const [menuOpen, setMenuOpen] = useState<boolean>(false);
 
     const logoutUser = async () => {
-        await account.deleteSession('current')
         setUserSession(null);
         setCustomerInSession(null);
         setCustomerCartItemsInSession(null, 'logout')
         localStorage.removeItem('slUserRole')
+        await account.deleteSession('current')
         navigate('/')
     }
 
@@ -68,6 +75,102 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
 
         <>
             <header className="relative z-10">
+
+                {/* Mobile menu */}
+                <Dialog open={menuOpen} onClose={setMenuOpen} className="relative z-40 lg:hidden">
+                    <DialogBackdrop
+                        transition
+                        className="fixed inset-0 bg-black bg-opacity-25 transition-opacity duration-300 ease-linear data-[closed]:opacity-0"
+                    />
+
+                    <div className="fixed inset-0 z-40 flex">
+                        <DialogPanel
+                            transition
+                            className="relative flex w-full max-w-xs transform flex-col overflow-y-auto bg-white pb-12 shadow-xl transition duration-300 ease-in-out data-[closed]:-translate-x-full"
+                        >
+                            <div className="flex justify-end px-4 pb-2 pt-3">
+                                <button
+                                    type="button"
+                                    onClick={() => setMenuOpen(false)}
+                                    className="-m-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400"
+                                >
+                                    <span className="sr-only">Close menu</span>
+                                    <CircleX aria-hidden="true" className="h-8 w-8 text-pink-800" />
+                                </button>
+                            </div>
+
+                            {/* Links */}
+                            <TabGroup className="mt-2">
+                                <div className="border-b border-gray-200">
+                                    <TabList className="-mb-px flex space-x-8 px-4">
+                                        <Tab
+                                            className="flex-1 whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-base font-medium text-gray-900 data-[selected]:border-indigo-600 data-[selected]:text-indigo-600"
+                                        >
+                                            ANDROID
+                                        </Tab>
+                                        <Tab
+                                            className="flex-1 whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-base font-medium text-gray-900 data-[selected]:border-indigo-600 data-[selected]:text-indigo-600"
+                                        >
+                                            IOS
+                                        </Tab>
+                                    </TabList>
+                                </div>
+                                <TabPanels as={Fragment}>
+
+                                    {/* ANDROID PRODUCTS */}
+                                    <TabPanel className="space-y-12 px-4 py-6">
+                                        <div className="grid grid-cols-2 gap-x-4 gap-y-10">
+                                            {androidProducts?.slice(0, 6).map((product: Models.Document) => (
+                                                <Link
+                                                    key={product.$id}
+                                                    to={userSession ? `/tienda/celulares/${product.$id}` : `/celulares/${product.$id}`}
+                                                    onClick={() => setMenuOpen(false)}
+                                                    className="group relative border border-dashed bg-indigo-100 p-1">
+                                                    <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-md bg-gray-100 group-hover:opacity-75">
+                                                        <img alt={product.name} src={product.image} className="object-cover object-center" />
+                                                    </div>
+                                                    <span className="mt-6 block text-center text-sm font-medium text-gray-900">
+                                                        <span aria-hidden="true" className="absolute inset-0 z-10" />
+                                                        {product.name}
+                                                    </span>
+                                                    <p aria-hidden="true" className="mt-1 text-center text-sm text-indigo-700 font-bold">
+                                                        RD$ {formatPrice(product.price)}
+                                                    </p>
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </TabPanel>
+
+                                    {/* IOS PRODUCTS */}
+                                    <TabPanel className="space-y-12 px-4 py-6">
+                                        <div className="grid grid-cols-2 gap-x-4 gap-y-10">
+                                            {iosProducts?.slice(0, 6).map((product: Models.Document) => (
+                                                <Link
+                                                    key={product.$id}
+                                                    to={userSession ? `/tienda/celulares/${product.$id}` : `/celulares/${product.$id}`}
+                                                    onClick={() => setMenuOpen(false)}
+                                                    className="group relative border border-dashed bg-indigo-100 p-1">
+                                                    <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-md bg-gray-100 group-hover:opacity-75">
+                                                        <img alt={product.name} src={product.image} className="object-cover object-center" />
+                                                    </div>
+                                                    <span className="mt-6 block text-center text-sm font-medium text-gray-900">
+                                                        <span aria-hidden="true" className="absolute inset-0 z-10" />
+                                                        {product.name}
+                                                    </span>
+                                                    <p aria-hidden="true" className="mt-1 text-center text-sm text-indigo-700 font-bold">
+                                                        RD$ {formatPrice(product.price)}
+                                                    </p>
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </TabPanel>
+
+                                </TabPanels>
+                            </TabGroup>
+                        </DialogPanel>
+                    </div>
+                </Dialog>
+
                 <nav aria-label="Top">
 
                     {/* Secondary navigation */}
@@ -114,8 +217,9 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                                                             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                                                                 <div className="grid grid-cols-4 gap-x-8 gap-y-10 py-16">
                                                                     {androidProducts?.slice(0, 4).map((product: Models.Document) => (
-                                                                        <Link
+                                                                        <CloseButton
                                                                             key={product.$id}
+                                                                            as={Link}
                                                                             to={userSession ? `/tienda/celulares/${product.$id}` : `/celulares/${product.$id}`}
                                                                             className="group relative rounded-xl border border-dashed bg-indigo-100 hover:bg-indigo-200 p-1"
                                                                         >
@@ -133,7 +237,7 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                                                                             <p aria-hidden="true" className="mt-1 text-center text-sm text-indigo-700 font-bold">
                                                                                 RD$ {formatPrice(product.price)}
                                                                             </p>
-                                                                        </Link>
+                                                                        </CloseButton>
                                                                     ))}
                                                                 </div>
                                                             </div>
@@ -164,8 +268,9 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                                                             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                                                                 <div className="grid grid-cols-4 gap-x-8 gap-y-10 py-16">
                                                                     {iosProducts?.slice(0, 4).map((product: Models.Document) => (
-                                                                        <Link
+                                                                        <CloseButton
                                                                             key={product.$id}
+                                                                            as={Link}
                                                                             to={userSession ? `/tienda/celulares/${product.$id}` : `/celulares/${product.$id}`}
                                                                             className="group relative rounded-xl border border-dashed bg-indigo-100 hover:bg-indigo-200 p-1"
                                                                         >
@@ -183,7 +288,7 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                                                                             <p aria-hidden="true" className="mt-1 text-center text-sm text-indigo-700 font-bold">
                                                                                 RD$ {formatPrice(product.price)}
                                                                             </p>
-                                                                        </Link>
+                                                                        </CloseButton>
                                                                     ))}
                                                                 </div>
                                                             </div>
@@ -195,37 +300,40 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                                     </div>
 
                                     {/* Logo (lg-) */}
-                                    <Link to={userSession ? "/tienda" : "/"} className="lg:hidden">
+                                    {/* <Link to={userSession ? "/tienda" : "/"} className="lg:hidden">
                                         <span className="sr-only">Logo</span>
                                         <img
                                             alt=""
-                                            //src="https://tailwindui.com/img/logos/mark.svg?color=white"
                                             src="/logo.png"
                                             className="h-14 w-auto" />
-                                    </Link>
+                                    </Link> */}
 
-                                    {/* Mobile menu and search (lg-) */}
+                                    {/* Mobile menu (lg-) */}
                                     <div className="flex flex-1 items-center lg:hidden">
                                         <button
                                             type="button"
-                                            onClick={() => setMobileMenuOpen(true)}
+                                            onClick={() => setMenuOpen(true)}
                                             className="-ml-2 p-2 text-white"
                                         >
                                             <span className="sr-only">Open menu</span>
-                                            <Menu aria-hidden="true" className="h-6 w-6" />
+                                            <Menu aria-hidden="true" className="h-8 w-8" />
                                         </button>
+                                    </div>
 
-                                        {/* Search */}
-                                        {/* <a href="#" className="ml-2 p-2 text-white">
-                                <span className="sr-only">Search</span>
-                                <CircleUser aria-hidden="true" className="h-6 w-6" />
-                            </a> */}
+                                    <div className='flex items-center justify-center'>
+                                        {/* Logo (lg-) */}
+                                        <Link to={userSession ? "/tienda" : "/"} className="lg:hidden">
+                                            {/* <span className="sr-only">Logo</span>
+                                            <img
+                                                alt=""
+                                                src="/logo.png"
+                                                className="h-14 w-auto" /> */}
+                                            <House aria-hidden="true" className="h-8 w-8 text-white" />
+                                        </Link>
+
                                     </div>
 
                                     <div className="flex flex-1 items-center justify-end">
-                                        {/* <a href="#" className="hidden text-sm font-medium text-white lg:block">
-                                Search
-                            </a> */}
 
                                         <div className="flex items-center lg:ml-8">
                                             {/* Login */}
@@ -238,26 +346,17 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                                             {/* Cart */}
                                             {userSession &&
                                                 <>
-                                                    {/* Login */}
-                                                    {/* <Link to="#" className="p-2 text-white">
-                                                <span className="sr-only">Help</span>
-                                                <CircleUser aria-hidden="true" className="h-6 w-6" />
-                                            </Link> */}
-
                                                     <div className="mr-4 flow-root lg:mr-8">
                                                         <Link to="/carrito" className="group -m-2 flex items-center p-2">
-                                                            <ShoppingCart aria-hidden="true" className="h-6 w-6 flex-shrink-0 text-white" />
-                                                            <span className="ml-2 text-sm font-medium text-white">{customerCartItemsInSession?.length}</span>
+                                                            <ShoppingCart aria-hidden="true" className="h-8 w-8 flex-shrink-0 text-white" />
+                                                            <span className="ml-2 text-base font-bold text-white">{customerCartItemsInSession?.length}</span>
                                                             <span className="sr-only">Carrito</span>
                                                         </Link>
                                                     </div>
 
                                                     <DropdownMenu>
                                                         <DropdownMenuTrigger asChild>
-                                                            {/* <Button variant="secondary" size="icon" className="rounded-full">
-                        <CircleUser className="h-5 w-5" />
-                        <span className="sr-only">Toggle user menu</span>
-                    </Button> */}
+
                                                             <Avatar className='cursor-pointer h-10 w-10'>
                                                                 <Avatar>
                                                                     <AvatarImage src={undefined} alt="Foto" />
@@ -285,15 +384,24 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                                                             </Avatar>
                                                         </DropdownMenuTrigger>
                                                         <DropdownMenuContent align="end">
-                                                            <DropdownMenuLabel className='text-center text-xl'>Mi Cuenta</DropdownMenuLabel>
+                                                            <DropdownMenuLabel className='text-center text-lg'>Mi Cuenta</DropdownMenuLabel>
+
                                                             <DropdownMenuSeparator />
-                                                            <DropdownMenuItem>Mis pedidos</DropdownMenuItem>
-                                                            {/* <DropdownMenuSeparator /> */}
-                                                            {/* <DropdownMenuItem>Support</DropdownMenuItem> */}
-                                                            <DropdownMenuSeparator />
+
                                                             <DropdownMenuItem className='cursor-pointer'>
                                                                 <button
-                                                                    className='w-full text-center text-red-700 font-bold'
+                                                                    className='w-full text-center text-gray-700 text-base font-bold'
+                                                                    onClick={() => navigate('/pedidos')}
+                                                                >
+                                                                    Mis Pedidos
+                                                                </button>
+                                                            </DropdownMenuItem>
+
+                                                            <DropdownMenuSeparator />
+
+                                                            <DropdownMenuItem className='cursor-pointer'>
+                                                                <button
+                                                                    className='w-full text-center text-base text-red-700 font-bold'
                                                                     onClick={() => setAlertDialogForLogout(true)}
                                                                 >
                                                                     Salir
