@@ -74,7 +74,7 @@ const Footer = () => {
                 </div>
                 <div className="mt-8 md:order-1 md:mt-0">
                     <p className="text-center text-xs md:text-sm leading-5 text-gray-200 font-bold">
-                        &copy; {date.getFullYear()} <span className='text-indigo-400'>Sellify eCommerce</span>, Inc. Todos los derechos reservados.
+                        &copy; {date.getFullYear()} <span className='text-rose-500'>Sellify eCommerce</span>, Inc. Todos los derechos reservados.
                     </p>
                 </div>
             </div>

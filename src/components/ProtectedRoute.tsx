@@ -7,7 +7,5 @@ export const ProtectedRoute = () => {
 
     const userSession = useSellifyStore((state) => state.userSession)
 
-    // console.log(userSession)
-
     return userSession !== null ? <Outlet /> : <Navigate to="/" />
 }

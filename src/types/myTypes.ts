@@ -58,4 +58,5 @@ export type Customer = {
     gender: string
     email: string
     app_user_ID: string
+    stripe_customer_ID: string
 }

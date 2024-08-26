@@ -14,7 +14,7 @@ import { cn } from '@/lib/utils';
 
 const CustomersPage = () => {
 
-    const [allTheCustomers, setAllTheCustomers] = useState<Models.Document[]>([]);
+    const [allTheCustomers, setAllTheCustomers] = useState<Models.Document[] | null>(null);
 
     const columns: ColumnDef<Models.Document[] | any>[] = [
         {
@@ -24,17 +24,6 @@ const CustomersPage = () => {
                 <span className='font-medium'>{row.index + 1}</span>
             ),
         },
-        // {
-        //     accessorKey: "image",
-        //     header: "Imagen",
-        //     cell: ({ row }) => (
-        //         <img
-        //             alt="Imagen del Producto"
-        //             className="w-28 h-20 rounded-md object-cover"
-        //             src={row?.original?.image === '' ? '/placeholder.png' : row?.original?.image}
-        //         />
-        //     ),
-        // },
         {
             accessorKey: "picture",
             header: "Foto",
@@ -70,14 +59,14 @@ const CustomersPage = () => {
             accessorKey: "names",
             header: "Nombres",
             cell: ({ row }) => (
-                <span className='font-bold text-xs text-gray-800'>{row?.original?.names}</span>
+                <span className='font-medium text-xs text-gray-800'>{row?.original?.names}</span>
             ),
         },
         {
             accessorKey: "lastnames",
             header: "Apellidos",
             cell: ({ row }) => (
-                <span className='font-bold text-xs text-gray-800'>{row?.original?.lastnames}</span>
+                <span className='font-medium text-xs text-gray-800'>{row?.original?.lastnames}</span>
             ),
         },
         {
@@ -86,7 +75,7 @@ const CustomersPage = () => {
             cell: ({ row }) => (
                 <span className={cn(
                     row?.original?.gender === 'M' ? 'text-blue-600' : 'text-pink-600',
-                    'text-xs font-bold'
+                    'text-xs font-medium'
                 )}>
                     {row?.original?.gender}
                 </span>
@@ -96,14 +85,14 @@ const CustomersPage = () => {
             accessorKey: "email",
             header: "Email",
             cell: ({ row }) => (
-                <span className='font-bold text-xs text-gray-800'>{row?.original?.email}</span>
+                <span className='font-medium text-xs text-gray-800'>{row?.original?.email}</span>
             ),
         },
         {
             accessorKey: "orders",
             header: "Órdenes",
             cell: ({ row }) => (
-                <span className='font-bold text-xs text-gray-800'>{row?.original?.orders?.length}</span>
+                <span className='font-medium text-xs text-gray-800'>{row?.original?.orders?.length}</span>
             ),
         },
 
@@ -156,12 +145,23 @@ const CustomersPage = () => {
         setAllTheCustomers(customers.documents)
     }
 
+    if (!allTheCustomers) {
+        return (
+            <div className='flex space-x-2 justify-center items-center h-screen'>
+                <span className='sr-only'>Loading...</span>
+                <div className='h-8 w-8 bg-rose-800 rounded-full animate-bounce [animation-delay:-0.3s]'></div>
+                <div className='h-8 w-8 bg-rose-800 rounded-full animate-bounce [animation-delay:-0.15s]'></div>
+                <div className='h-8 w-8 bg-rose-800 rounded-full animate-bounce'></div>
+            </div>
+        );
+    }
+
     return (
         <>
             <PageHeader pageName="Clientes" />
 
             {
-                allTheCustomers.length === 0 ? (<div
+                allTheCustomers && allTheCustomers.length === 0 ? (<div
                     className="flex flex-1 items-center justify-center rounded-lg">
                     <div className="flex flex-col items-center gap-1 text-center">
                         <h3 className="text-2xl font-bold tracking-tight">

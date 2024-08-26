@@ -1,0 +1,21 @@
+{
+  "projectId": "66981ce80026729feaca",
+  "projectName": "Sellify",
+  "functions": [
+    {
+      "$id": "66b94e60daaf8f2c9bad",
+      "name": "appwrite_stripe_payments",
+      "runtime": "node-18.0",
+      "execute": ["any"],
+      "events": [],
+      "schedule": "",
+      "timeout": 15,
+      "enabled": true,
+      "logging": true,
+      "entrypoint": "src/main.js",
+      "commands": "npm install",
+      "ignore": ["node_modules", ".npm"],
+      "path": "functions/appwrite_stripe_payments"
+    }
+  ]
+}

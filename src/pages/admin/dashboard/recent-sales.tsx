@@ -26,7 +26,7 @@ const RecentSales = ({ data }: Props) => {
                         <Avatar>
                             <AvatarImage src={undefined} alt="Foto" />
                             <AvatarFallback className={cn(
-                                sale?.customerGender === 'M' ? 'bg-blue-600' : 'bg-pink-600',
+                                sale?.customerGender === 'M' ? 'bg-blue-500' : 'bg-pink-500',
                                 'text-gray-100 font-bold'
                             )}>
                                 <span className='grid grid-cols-1 justify-items-center'>
@@ -49,8 +49,8 @@ const RecentSales = ({ data }: Props) => {
                     </Avatar>
 
                     <div className="ml-2 space-y-0 flex-1">
-                        <p className="text-xs sm:text-sm text-indigo-700 font-bold leading-none">{sale?.customerNames}</p>
-                        <p className="text-xs sm:text-sm text-indigo-700 font-bold leading-none">{sale?.customerLastnames}</p>
+                        <p className="text-xs sm:text-sm text-gray-900 font-bold leading-none">{sale?.customerNames}</p>
+                        <p className="text-xs sm:text-sm text-gray-900 font-bold leading-none">{sale?.customerLastnames}</p>
                         <p className="text-sm text-muted-foreground">
                             {sale?.customerEmail}
                         </p>

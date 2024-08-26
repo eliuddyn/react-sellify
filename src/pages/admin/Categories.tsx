@@ -53,7 +53,7 @@ const categoryFormSchema = z.object({
 
 const CategoriesPage = () => {
 
-    const [allTheCategories, setAllTheCategories] = useState<Models.Document[]>([]);
+    const [allTheCategories, setAllTheCategories] = useState<Models.Document[] | null>(null);
     const [selectedCategory, setSelectedCategory] = useState<Models.Document | null>(null);
     const [selectedCategoryToDelete, setSelectedCategoryToDelete] = useState<Models.Document | null>(null);
     const [isUpdateActive, setIsUpdateActive] = useState<boolean | undefined>(false);
@@ -120,8 +120,7 @@ const CategoriesPage = () => {
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <Button
-                                    variant="default"
-                                    className='rounded-lg h-8 w-8'
+                                    className='rounded-lg h-8 w-8 hover:bg-emerald-600'
                                     onClick={() => { fillCategoryToUpdate(row.original) }}
                                 >
                                     <span><SquarePen className="h-6 w-6" /></span>
@@ -195,7 +194,7 @@ const CategoriesPage = () => {
 
         try {
             const response = await db.categories.create(myCategory);
-            setAllTheCategories((prev) => [response, ...prev])
+            setAllTheCategories(response)
             clearCategoryForm()
 
         } catch (error) {
@@ -277,6 +276,17 @@ const CategoriesPage = () => {
         setCanBeDeletedDialog(false)
         setSelectedCategoryToDelete(null)
     };
+
+    if (!allTheCategories) {
+        return (
+            <div className='flex space-x-2 justify-center items-center h-screen'>
+                <span className='sr-only'>Loading...</span>
+                <div className='h-8 w-8 bg-rose-800 rounded-full animate-bounce [animation-delay:-0.3s]'></div>
+                <div className='h-8 w-8 bg-rose-800 rounded-full animate-bounce [animation-delay:-0.15s]'></div>
+                <div className='h-8 w-8 bg-rose-800 rounded-full animate-bounce'></div>
+            </div>
+        );
+    }
 
     return (
         <>
@@ -369,7 +379,7 @@ const CategoriesPage = () => {
             </div >
 
             {
-                allTheCategories.length === 0 ? (<div
+                allTheCategories && allTheCategories.length === 0 ? (<div
                     className="flex flex-1 items-center justify-center rounded-lg">
                     <div className="flex flex-col items-center gap-1 text-center">
                         <h3 className="text-2xl font-bold tracking-tight">

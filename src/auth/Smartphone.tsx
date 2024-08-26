@@ -10,7 +10,7 @@ import { Models, Query } from 'appwrite';
 import { es } from 'date-fns/locale';
 import { format } from "date-fns"
 import { useNavigate, useParams } from 'react-router-dom';
-import { Check, Star, X } from "lucide-react"
+import { SquareCheckBig, Star, X } from "lucide-react"
 import { Button } from '@/components/ui/button';
 import { toast } from "sonner"
 import { Textarea } from "@/components/ui/textarea"
@@ -312,14 +312,14 @@ const Smartphone = () => {
                                     {theProduct?.sku &&
                                         <span
                                             className="text-sm text-gray-600 font-bold">
-                                            SKU: <span className='text-indigo-700'>{theProduct?.sku}</span>
+                                            SKU: <span className='text-blue-700'>{theProduct?.sku}</span>
                                         </span>
                                     }
 
                                 </div>
 
                                 <div className="flex items-center">
-                                    <p className="text-lg text-indigo-700 font-bold sm:text-xl">RD$ {formatPrice(theProduct?.price)}</p>
+                                    <p className="text-lg text-rose-700 font-bold sm:text-xl">RD$ {formatPrice(theProduct?.price)}</p>
 
                                     <div className="ml-4 border-l border-gray-300 pl-4">
                                         <h2 className="sr-only">Reviews</h2>
@@ -331,7 +331,7 @@ const Smartphone = () => {
                                                             key={rating}
                                                             aria-hidden="true"
                                                             className={cn(
-                                                                theReviewsData?.average >= rating ? 'text-yellow-400' : 'text-gray-300',
+                                                                theReviewsData?.average >= rating ? 'text-yellow-400' : 'text-gray-500',
                                                                 'h-5 w-5 flex-shrink-0',
                                                             )}
                                                         />
@@ -351,13 +351,15 @@ const Smartphone = () => {
                                 <div className="mt-6 flex items-center">
                                     {theProduct?.status === 'DISPONIBLE' && theProduct?.quantity > 0 ? (
                                         <>
-                                            <Check aria-hidden="true" className="h-5 w-5 flex-shrink-0 text-green-500" />
-                                            <p className="ml-2 text-sm text-green-600 font-bold">{theProduct?.status}</p>
+                                            <SquareCheckBig aria-hidden="true" className="h-5 w-5 flex-shrink-0 text-teal-600" />
+                                            <p className="ml-2 text-base text-teal-600 font-medium">{theProduct?.quantity}</p>
+                                            <p className='text-gray-900 ml-1'>{theProduct?.quantity > 1 ? 'disponibles' : 'disponible'}</p>
                                         </>
                                     ) : (
                                         <>
                                             <X aria-hidden="true" className="h-5 w-5 flex-shrink-0 text-pink-800" />
-                                            <p className="ml-2 text-sm text-pink-800 font-bold">{theProduct?.status}</p>
+                                            <p className="ml-2 text-base text-pink-800 font-medium">0</p>
+                                            <p className='text-gray-900 ml-1'>{theProduct?.quantity > 1 ? 'disponibles' : 'disponible'}</p>
                                         </>
                                     )}
 
@@ -381,7 +383,7 @@ const Smartphone = () => {
                                     {isTheProductInCart ? (
                                         <Button
                                             onClick={() => navigate('/carrito')}
-                                            className="flex w-full items-center justify-center rounded-md border border-transparent bg-blue-500 px-8 py-3 text-lg font-bold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                                            className="flex w-full items-center justify-center rounded-md border border-transparent bg-blue-500 px-8 py-3 text-lg font-bold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                                         >
                                             Ver en el carrito
                                         </Button>
@@ -389,7 +391,7 @@ const Smartphone = () => {
                                         <Button
                                             disabled={theProduct?.status === 'NO DISPONIBLE' || theProduct?.quantity === 0}
                                             onClick={() => addProductToCart(theProduct)}
-                                            className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-lg font-bold text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                                            className="flex w-full items-center justify-center rounded-md border border-transparent bg-rose-600 px-8 py-3 text-lg font-bold text-white hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                                         >
                                             Añadir al carrito
                                         </Button>
@@ -406,7 +408,7 @@ const Smartphone = () => {
                             <div className="lg:col-span-4">
                                 <h2 className="text-2xl font-bold tracking-tight text-gray-900">Reseñas de clientes</h2>
 
-                                <div className="mt-3 flex items-center">
+                                {/* <div className="mt-3 flex items-center">
                                     <div>
                                         <div className="flex items-center">
                                             {[1, 2, 3, 4, 5].map((rating) => (
@@ -423,7 +425,7 @@ const Smartphone = () => {
                                         <p className="sr-only">{theReviewsData?.average} out of 5 stars</p>
                                     </div>
                                     <p className="ml-2 text-sm text-gray-900">Basado en {allTheReviews?.length} {allTheReviews?.length > 1 ? 'reseñas' : 'reseña'}</p>
-                                </div>
+                                </div> */}
 
                                 <div className="mt-6">
                                     <h3 className="sr-only">Review data</h3>
@@ -440,7 +442,7 @@ const Smartphone = () => {
                                                         <Star
                                                             aria-hidden="true"
                                                             className={cn(
-                                                                count.count > 0 ? 'text-yellow-400' : 'text-gray-300',
+                                                                count.count > 0 ? 'text-yellow-400' : 'text-gray-500',
                                                                 'h-5 w-5 flex-shrink-0',
                                                             )}
                                                         />
@@ -469,7 +471,7 @@ const Smartphone = () => {
                                     {isTheProductPurchased && !isTheProductReviewed ?
                                         (
                                             <>
-                                                <h3 className="text-lg font-bold text-indigo-700">Comparte tu opinión</h3>
+                                                <h3 className="text-lg font-bold text-rose-700">Comparte tu opinión</h3>
                                                 <p className="mt-1 text-sm text-gray-900">
                                                     Si has utilizado este producto, comparte tu opinión con otros clientes.
                                                 </p>
@@ -486,7 +488,7 @@ const Smartphone = () => {
                                                 (
                                                     <Button
                                                         variant="outline"
-                                                        className='mt-4 bg-amber-400 text-black hover:bg-indigo-600 hover:text-gray-100 text-base'>
+                                                        className='mt-4 bg-amber-400 text-black hover:bg-rose-600 hover:text-gray-100 text-base'>
                                                         Escribe tu reseña
                                                     </Button>
                                                 )
@@ -498,11 +500,11 @@ const Smartphone = () => {
                                             onInteractOutside={event => event.preventDefault()}
                                             onOpenAutoFocus={(e) => e.preventDefault()}
                                             className='bg-slate-200 dark:bg-gray-800 overflow-y-auto'>
-                                            <SheetHeader className='pt-4 pl-3 pb-3 bg-indigo-800 flex items-center justify-center'>
+                                            <SheetHeader className='pt-4 pl-3 pb-3 bg-amber-400 flex items-center justify-center'>
                                                 <SheetTitle className='text-gray-200 text-2xl'>
-                                                    <span className='text-amber-400 text-lg text-center'>{theProduct?.name}</span>
+                                                    <span className='text-gray-900 text-lg text-center'>{theProduct?.name}</span>
                                                 </SheetTitle>
-                                                <SheetDescription className='text-gray-200 text-base'>
+                                                <SheetDescription className='text-gray-700 text-base font-bold'>
                                                     {isUpdateActive ? 'Actualiza tu reseña' : 'Escribe tu reseña'}
                                                 </SheetDescription>
                                             </SheetHeader>
@@ -570,9 +572,11 @@ const Smartphone = () => {
                                                             <Button type="button" className='bg-rose-500 hover:bg-rose-600 text-gray-100 dark:text-gray-100' onClick={clearReviewForm}>Cancelar</Button>
                                                         </SheetClose>
                                                         <Button
-                                                            className='bg-indigo-600 hover:bg-indigo-700'
+                                                            className='bg-amber-400 hover:bg-amber-500'
                                                             type="submit">
-                                                            {isUpdateActive ? 'Actualizar' : 'Agregar'}
+                                                            <span className='text-black font-bold'>
+                                                                {isUpdateActive ? 'Actualizar' : 'Agregar'}
+                                                            </span>
                                                         </Button>
                                                     </div>
                                                 </form>
@@ -595,7 +599,7 @@ const Smartphone = () => {
                                                         <Avatar>
                                                             <AvatarImage src={undefined} alt="Foto" />
                                                             <AvatarFallback className={cn(
-                                                                review?.customer?.gender === 'M' ? 'bg-blue-600' : 'bg-pink-600',
+                                                                review?.customer?.gender === 'M' ? 'bg-blue-500' : 'bg-pink-500',
                                                                 'text-gray-100'
                                                             )}>
                                                                 <span className='grid grid-cols-1 justify-items-center'>
@@ -643,7 +647,7 @@ const Smartphone = () => {
                                                             (<Button
                                                                 size='sm'
                                                                 variant="outline"
-                                                                className='mt-4 bg-indigo-600 hover:bg-indigo-700 text-white hover:text-white text-sm'
+                                                                className='mt-4 bg-amber-400 hover:bg-amber-500 text-black hover:text-white text-sm'
                                                                 onClick={() => reviewInfoToFill(selectedReview as Models.Document)}
                                                             >
                                                                 Edita tu reseña
@@ -665,7 +669,7 @@ const Smartphone = () => {
                                                         (<Button
                                                             size='sm'
                                                             variant="outline"
-                                                            className='mt-4 bg-indigo-600 hover:bg-indigo-700 text-white hover:text-white text-sm'
+                                                            className='mt-4 bg-amber-400 hover:bg-amber-500 text-black hover:text-white text-sm'
                                                             onClick={() => reviewInfoToFill(selectedReview as Models.Document)}
                                                         >
                                                             Edita tu reseña
@@ -700,7 +704,7 @@ const Smartphone = () => {
                             Entendido
                         </AlertDialogCancel>
 
-                        <AlertDialogAction className='bg-indigo-600 hover:bg-indigo-700' onClick={() => navigate('/login')}>Acceder</AlertDialogAction>
+                        <AlertDialogAction className='bg-rose-600 hover:bg-rose-700' onClick={() => navigate('/login')}>Acceder</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>

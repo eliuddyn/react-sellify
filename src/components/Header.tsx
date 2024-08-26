@@ -104,12 +104,12 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                                 <div className="border-b border-gray-200">
                                     <TabList className="-mb-px flex space-x-8 px-4">
                                         <Tab
-                                            className="flex-1 whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-base font-medium text-gray-900 data-[selected]:border-indigo-600 data-[selected]:text-indigo-600"
+                                            className="flex-1 whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-base font-medium text-gray-900 data-[selected]:border-rose-600 data-[selected]:text-rose-600"
                                         >
                                             ANDROID
                                         </Tab>
                                         <Tab
-                                            className="flex-1 whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-base font-medium text-gray-900 data-[selected]:border-indigo-600 data-[selected]:text-indigo-600"
+                                            className="flex-1 whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-base font-medium text-gray-900 data-[selected]:border-rose-600 data-[selected]:text-rose-600"
                                         >
                                             IOS
                                         </Tab>
@@ -125,15 +125,16 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                                                     key={product.$id}
                                                     to={userSession ? `/tienda/celulares/${product.$id}` : `/celulares/${product.$id}`}
                                                     onClick={() => setMenuOpen(false)}
-                                                    className="group relative border border-dashed bg-indigo-100 p-1">
-                                                    <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-md bg-gray-100 group-hover:opacity-75">
+                                                    className="group relative rounded-2xl border border-dashed bg-rose-100 p-1"
+                                                >
+                                                    <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-xl bg-gray-100 group-hover:opacity-75">
                                                         <img alt={product.name} src={product.image} className="object-cover object-center" />
                                                     </div>
                                                     <span className="mt-6 block text-center text-sm font-medium text-gray-900">
                                                         <span aria-hidden="true" className="absolute inset-0 z-10" />
                                                         {product.name}
                                                     </span>
-                                                    <p aria-hidden="true" className="mt-1 text-center text-sm text-indigo-700 font-bold">
+                                                    <p aria-hidden="true" className="mt-1 text-center text-sm text-rose-700 font-bold">
                                                         RD$ {formatPrice(product.price)}
                                                     </p>
                                                 </Link>
@@ -149,15 +150,16 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                                                     key={product.$id}
                                                     to={userSession ? `/tienda/celulares/${product.$id}` : `/celulares/${product.$id}`}
                                                     onClick={() => setMenuOpen(false)}
-                                                    className="group relative border border-dashed bg-indigo-100 p-1">
-                                                    <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-md bg-gray-100 group-hover:opacity-75">
+                                                    className="group relative rounded-2xl border border-dashed bg-rose-100 p-1"
+                                                >
+                                                    <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-xl bg-gray-100 group-hover:opacity-75">
                                                         <img alt={product.name} src={product.image} className="object-cover object-center" />
                                                     </div>
                                                     <span className="mt-6 block text-center text-sm font-medium text-gray-900">
                                                         <span aria-hidden="true" className="absolute inset-0 z-10" />
                                                         {product.name}
                                                     </span>
-                                                    <p aria-hidden="true" className="mt-1 text-center text-sm text-indigo-700 font-bold">
+                                                    <p aria-hidden="true" className="mt-1 text-center text-sm text-rose-700 font-bold">
                                                         RD$ {formatPrice(product.price)}
                                                     </p>
                                                 </Link>
@@ -174,7 +176,7 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                 <nav aria-label="Top">
 
                     {/* Secondary navigation */}
-                    <div className="bg-indigo-900 backdrop-blur-md backdrop-filter">
+                    <div className="bg-gray-900 backdrop-blur-md backdrop-filter">
                         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                             <div>
                                 <div className="flex h-16 items-center justify-between">
@@ -200,7 +202,7 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                                                             ANDROID
                                                             <span
                                                                 aria-hidden="true"
-                                                                className="absolute inset-x-0 -bottom-px h-0.5 transition duration-200 ease-out group-data-[open]:bg-amber-400"
+                                                                className="absolute inset-x-0 -bottom-px h-1 transition duration-200 ease-out group-data-[open]:bg-rose-400"
                                                             />
                                                         </PopoverButton>
                                                     </div>
@@ -221,7 +223,7 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                                                                             key={product.$id}
                                                                             as={Link}
                                                                             to={userSession ? `/tienda/celulares/${product.$id}` : `/celulares/${product.$id}`}
-                                                                            className="group relative rounded-xl border border-dashed bg-indigo-100 hover:bg-indigo-200 p-1"
+                                                                            className="group relative rounded-xl border border-dashed bg-rose-100 hover:bg-rose-200 p-1"
                                                                         >
                                                                             <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-xl bg-gray-100 group-hover:opacity-75">
                                                                                 <img
@@ -234,7 +236,7 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                                                                                 <span aria-hidden="true" className="absolute inset-0 z-10" />
                                                                                 {product.name}
                                                                             </span>
-                                                                            <p aria-hidden="true" className="mt-1 text-center text-sm text-indigo-700 font-bold">
+                                                                            <p aria-hidden="true" className="mt-1 text-center text-sm text-rose-700 font-bold">
                                                                                 RD$ {formatPrice(product.price)}
                                                                             </p>
                                                                         </CloseButton>
@@ -272,7 +274,7 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                                                                             key={product.$id}
                                                                             as={Link}
                                                                             to={userSession ? `/tienda/celulares/${product.$id}` : `/celulares/${product.$id}`}
-                                                                            className="group relative rounded-xl border border-dashed bg-indigo-100 hover:bg-indigo-200 p-1"
+                                                                            className="group relative rounded-xl border border-dashed bg-rose-100 hover:bg-rose-200 p-1"
                                                                         >
                                                                             <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-xl bg-gray-100 group-hover:opacity-75">
                                                                                 <img
@@ -285,7 +287,7 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                                                                                 <span aria-hidden="true" className="absolute inset-0 z-10" />
                                                                                 {product.name}
                                                                             </span>
-                                                                            <p aria-hidden="true" className="mt-1 text-center text-sm text-indigo-700 font-bold">
+                                                                            <p aria-hidden="true" className="mt-1 text-center text-sm text-rose-700 font-bold">
                                                                                 RD$ {formatPrice(product.price)}
                                                                             </p>
                                                                         </CloseButton>
@@ -338,7 +340,7 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                                         <div className="flex items-center lg:ml-8">
                                             {/* Login */}
                                             {!userSession &&
-                                                <Link to="/login" className="text-base font-bold text-indigo-800 px-3 py-1 bg-gray-50 hover:bg-indigo-500 hover:text-white rounded-3xl">
+                                                <Link to="/login" className="text-base font-bold text-rose-700 px-3 py-1 bg-gray-50 hover:bg-rose-700 hover:text-white rounded-3xl">
                                                     Acceder
                                                 </Link>
                                             }
@@ -354,7 +356,7 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                                                         </Link>
                                                     </div>
 
-                                                    <DropdownMenu>
+                                                    <DropdownMenu aria-hidden="false">
                                                         <DropdownMenuTrigger asChild>
 
                                                             <Avatar className='cursor-pointer h-10 w-10'>

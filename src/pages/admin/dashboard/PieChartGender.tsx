@@ -26,14 +26,8 @@ type Props = {
 const PieChartGender = ({ data }: Props) => {
 
     const chartData = [
-        { gender: "Hombres", total: data?.totalMaleCustomers, fill: "#1d4ed8" },
-        { gender: "Mujeres", total: data?.totalFemaleCustomers, fill: "#db2777" },
-        // { browser: "firefox", visitors: 287, fill: "var(--color-firefox)" },
-        // { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-        // { browser: "other", visitors: 190, fill: "var(--color-other)" },
-        // { browser: "other", visitors: 190, fill: "var(--color-other)" },
-        // { browser: "other", visitors: 190, fill: "var(--color-other)" },
-        // { browser: "other", visitors: 190, fill: "var(--color-other)" },
+        { gender: "Hombres", total: data?.totalMaleCustomers, fill: "#3b82f6" },
+        { gender: "Mujeres", total: data?.totalFemaleCustomers, fill: "#ec4899" },
     ]
 
     return (

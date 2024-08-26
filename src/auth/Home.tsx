@@ -135,7 +135,7 @@ const HomePage = () => {
                             <Link
                                 key={subc}
                                 to={userSession ? `/tienda/productos/${subc.toLowerCase()}` : `/productos/${subc.toLowerCase()}`}
-                                className="relative bg-indigo-600 h-36 rounded-xl flex flex-col items-center justify-center"
+                                className="relative bg-rose-600 h-36 rounded-xl flex flex-col items-center justify-center"
                             >
 
                                 <span className='relative text-center text-2xl font-bold text-white'>{subc}</span>
@@ -151,7 +151,7 @@ const HomePage = () => {
                             Nuestros Productos
                         </h2>
 
-                        <Link to={userSession ? "/tienda/productos/todos" : "/productos/todos"} className="hidden text-base font-semibold text-indigo-600 hover:text-indigo-500 sm:block">
+                        <Link to={userSession ? "/tienda/productos/todos" : "/productos/todos"} className="hidden text-base font-semibold text-rose-600 hover:text-rose-500 sm:block">
                             Ver todos los productos
                             <span aria-hidden="true"> &rarr;</span>
                         </Link>
@@ -164,7 +164,7 @@ const HomePage = () => {
                             <div className="grid justify-items-center grid-cols-1 gap-y-8 gap-x-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                                 {allTheProducts.slice(0, 8).map((product: Models.Document) => (
                                     <Link key={product.$id} to={userSession ? `/tienda/celulares/${product.$id}` : `/celulares/${product.$id}`}
-                                        className="flex flex-col items-center justify-center bg-gray-100 hover:bg-indigo-200 
+                                        className="flex flex-col items-center justify-center bg-gray-100 hover:bg-rose-200 
                                     rounded-xl text-gray-800 border border-dashed p-3"
                                     >
                                         <div className="h-96 w-[320px] lg:h-80 lg:w-80 xl:w-64 overflow-hidden rounded-lg bg-gray-200">
@@ -175,7 +175,7 @@ const HomePage = () => {
                                             />
                                         </div>
                                         <h3 className="mt-4 text-lg font-bold">{product.name}</h3>
-                                        <h3 className="text-sm text-gray-700">4 comentarios</h3>
+                                        <h3 className="text-sm text-gray-700">{product?.reviews?.length} {product?.reviews?.length > 1 ? 'reseñas' : 'reseña'}</h3>
                                         <p className="mt-3 text-base font-medium text-gray-800">RD$ {formatPrice(product?.price)}</p>
                                     </Link>
                                 ))}
@@ -185,7 +185,7 @@ const HomePage = () => {
 
                     <div className="mt-6 px-4 sm:hidden">
                         <Link to={userSession ? `/tienda/productos/todos` : `/productos/todos`}
-                            className="block text-sm font-semibold text-indigo-600 hover:text-indigo-500">
+                            className="block text-sm font-semibold text-rose-600 hover:text-rose-500">
                             Ver todos los productos
                             <span aria-hidden="true"> &rarr;</span>
                         </Link>
@@ -216,7 +216,7 @@ const HomePage = () => {
                                 </p>
                                 <Link
                                     to={userSession ? "/tienda/productos/todos" : "/productos/todos"}
-                                    className="mt-8 block w-full rounded-md border border-transparent bg-white px-8 py-3 text-base font-medium text-gray-900 hover:text-white hover:bg-indigo-500 sm:w-auto"
+                                    className="mt-8 block w-full rounded-md border border-transparent bg-white px-8 py-3 text-base font-medium text-gray-900 hover:text-white hover:bg-rose-500 sm:w-auto"
                                 >
                                     Ver los Smartphones
                                 </Link>
@@ -286,7 +286,7 @@ const HomePage = () => {
                                 </p>
                                 <Link
                                     to={userSession ? `/tienda/productos/ios` : `/productos/ios`}
-                                    className="mt-8 block w-full rounded-md border border-transparent bg-white px-8 py-3 text-base font-medium text-gray-900 hover:text-white hover:bg-indigo-500 sm:w-auto"
+                                    className="mt-8 block w-full rounded-md border border-transparent bg-white px-8 py-3 text-base font-medium text-gray-900 hover:text-white hover:bg-rose-500 sm:w-auto"
                                 >
                                     Compra un iPhone
                                 </Link>

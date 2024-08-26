@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react'
@@ -83,7 +84,7 @@ const productFormSchema = z.object({
 
 const ProductsPage = () => {
 
-    const [allTheProducts, setAllTheProducts] = useState<Models.Document[]>([]);
+    const [allTheProducts, setAllTheProducts] = useState<Models.Document[] | null>(null);
     const [allTheCategories, setAllTheCategories] = useState<Models.Document[]>([]);
     const [allTheSubCategories, setAllTheSubCategories] = useState<string[]>([]);
     const [isUpdateActive, setIsUpdateActive] = useState<boolean | undefined>(false);
@@ -135,7 +136,7 @@ const ProductsPage = () => {
             accessorKey: "name",
             header: "Producto",
             cell: ({ row }) => (
-                <span className='font-bold text-xs'>{row?.original?.name}</span>
+                <span className='font-medium text-xs'>{row?.original?.name}</span>
             ),
         },
         {
@@ -147,7 +148,7 @@ const ProductsPage = () => {
                 // </Badge>
                 <span className={cn(
                     row?.original?.status === 'DISPONIBLE' ? 'text-teal-600' : 'text-red-500',
-                    'text-xs font-bold'
+                    'text-xs font-medium'
                 )}>
                     {row?.original?.status}
                 </span>
@@ -157,21 +158,21 @@ const ProductsPage = () => {
             accessorKey: "price",
             header: "Precio",
             cell: ({ row }) => (
-                <span className='font-bold text-xs text-gray-800'>RD$ {formatPrice(row?.original?.price)}</span>
+                <span className='font-medium text-xs text-gray-800'>RD$ {formatPrice(row?.original?.price)}</span>
             ),
         },
         {
             accessorKey: "sales",
             header: "Ventas",
             cell: ({ row }) => (
-                <span className='font-bold text-xs text-gray-800'>{row?.original?.sales}</span>
+                <span className='font-medium text-xs text-gray-800'>{row?.original?.sales}</span>
             ),
         },
         {
             accessorKey: "sku",
             header: "SKU",
             cell: ({ row }) => (
-                <span className='text-blue-600 font-bold'>
+                <span className='text-blue-700 font-medium'>
                     {row?.original?.sku}
                 </span>
             ),
@@ -197,8 +198,7 @@ const ProductsPage = () => {
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <Button
-                                    variant="default"
-                                    className='rounded-lg h-8 w-8'
+                                    className='rounded-lg h-7 w-7 text-gray-100 hover:bg-emerald-600'
                                     onClick={() => { fillProductToUpdate(row?.original) }}
                                 >
                                     <span><SquarePen className="h-6 w-6" /></span>
@@ -240,6 +240,17 @@ const ProductsPage = () => {
 
     const getAllProducts = async () => {
         const products = await db.products.list();
+
+        products.documents?.sort(function (a: Models.Document, b: Models.Document) {
+            if (a?.name < b?.name) {
+                return -1;
+            }
+            if (a?.name > b?.name) {
+                return 1;
+            }
+            return 0;
+        })
+
         setAllTheProducts(products.documents)
     }
 
@@ -295,7 +306,6 @@ const ProductsPage = () => {
         let myImageFileId: string = '';
 
         if (values?.image) {
-
             const result = await storage.createFile(
                 import.meta.env.VITE_APPWRITE_BUCKET_ID as string, // bucketId
                 ID.unique(), // fileId
@@ -312,28 +322,63 @@ const ProductsPage = () => {
             myImageURL = preview?.href
         }
 
-        const myProduct = {
-            name: upperCaseFunction(values?.name),
-            description: values?.description,
-            price: values?.price,
-            category: values?.category,
-            sub_category: values?.sub_category,
-            operating_system: values?.operating_system,
-            weight_unit: values?.weight_unit,
-            weight: values?.weight,
-            quantity: values?.quantity,
-            sku: 'SL' + randomCode(10, { numericOnly: true }),
-            status: values?.status,
-            deal: values?.deal,
-            image_file_id: myImageFileId,
-            image: myImageURL,
-            created_at: new Date()
-        }
-
         try {
-            const response = await db.products.create(myProduct);
-            setAllTheProducts((prev) => [response, ...prev])
-            clearProductForm()
+            await fetch('https://66b94e60ecb482096469.appwrite.global/create_product', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    productName: upperCaseFunction(values?.name),
+                    productDescription: values?.description,
+                    productPrice: values?.price,
+                    productImage: myImageURL
+                })
+            })
+                .then(async (res) => {
+                    const data = await res.json()
+
+                    const myProduct = {
+                        name: upperCaseFunction(values?.name),
+                        description: values?.description.trim(),
+                        price: values?.price,
+                        category: values?.category,
+                        sub_category: values?.sub_category,
+                        operating_system: values?.operating_system,
+                        weight_unit: values?.weight_unit,
+                        weight: values?.weight,
+                        quantity: values?.quantity,
+                        sku: 'SL' + randomCode(10, { numericOnly: true }),
+                        status: values?.status,
+                        deal: values?.deal,
+                        image_file_id: myImageFileId,
+                        image: myImageURL,
+                        created_at: new Date(),
+                        stripe_product_id: data?.stripeProductID,
+                        stripe_price_id: data?.stripePriceID
+                    }
+
+                    const response = await db.products.create(myProduct);
+
+                    if (allTheProducts?.length === 0) {
+                        setAllTheProducts([response])
+                    }
+
+                    if (allTheProducts && allTheProducts?.length > 0) {
+
+                        setAllTheProducts((prev: any) => [response, ...prev]
+                            .sort(function (a: Models.Document, b: Models.Document) {
+                                if (a?.name < b?.name) {
+                                    return -1;
+                                }
+                                if (a?.name > b?.name) {
+                                    return 1;
+                                }
+                                return 0;
+                            }))
+                        //setAllTheProducts(theSortOfProducts)
+                    }
+
+                    clearProductForm()
+                })
 
         } catch (error) {
             console.log(error)
@@ -367,7 +412,6 @@ const ProductsPage = () => {
         setLoading(true)
 
         let myImageURL: string = selectedProduct?.image;
-        let myImageFileId: string = '';
 
         if (values?.image) {
 
@@ -376,8 +420,6 @@ const ProductsPage = () => {
                 ID.unique(), // fileId
                 values?.image as File, // file
             );
-
-            myImageFileId = result?.$id
 
             const preview = await storage.getFileView(
                 import.meta.env.VITE_APPWRITE_BUCKET_ID as string, // bucketId
@@ -392,26 +434,171 @@ const ProductsPage = () => {
             );
         }
 
-        const myProduct = {
-            name: upperCaseFunction(values?.name),
-            description: values?.description,
-            price: values?.price,
-            category: values?.category,
-            sub_category: values?.sub_category,
-            operating_system: values?.operating_system,
-            weight_unit: values?.weight_unit,
-            weight: values?.weight,
-            quantity: values?.quantity,
-            deal: values?.deal,
-            status: values?.status,
-            image: myImageURL,
-            image_file_id: myImageFileId,
+        let theName: any
+        let theNameForStripe: any
+        let theDescription: any
+        let theDescriptionForStripe: any
+        let theQuantity: any
+        let thePrice: any
+        let thePriceForStripe: any
+        let theCategory: any
+        let theSubCategory: any
+        let theOperatingSystem: any
+        let theStatus: any
+        let theDeal: any
+        let theWeightUnit: any
+        let theWeight: any
+        let theImage: any
+        let theImageForStripe: any
+        let theStripePriceID: any
+
+        if (selectedProduct?.name !== upperCaseFunction(values?.name)) {
+            theName = {
+                name: upperCaseFunction(values?.name)
+            }
+
+            theNameForStripe = {
+                productName: upperCaseFunction(values?.name)
+            }
         }
 
+        if (selectedProduct?.description !== values?.description) {
+            theDescription = {
+                description: values?.description.trim()
+            }
+
+            theDescriptionForStripe = {
+                productDescription: values?.description
+            }
+        }
+
+        if (selectedProduct?.quantity !== values?.quantity) {
+            theQuantity = {
+                quantity: values?.quantity
+            }
+        }
+
+        if (selectedProduct?.price !== values?.price) {
+            thePrice = {
+                price: values?.price
+            }
+
+            thePriceForStripe = {
+                productPrice: values?.price
+            }
+        }
+
+        if (selectedProduct?.category?.$id !== values?.category) {
+            theCategory = {
+                category: values?.category
+            }
+        }
+
+        if (selectedProduct?.sub_category !== values?.sub_category) {
+            theSubCategory = {
+                sub_category: values?.sub_category
+            }
+        }
+
+        if (selectedProduct?.operating_system !== values?.operating_system) {
+            theOperatingSystem = {
+                operating_system: values?.operating_system
+            }
+        }
+
+        if (selectedProduct?.status !== values?.status) {
+            theStatus = {
+                status: values?.status
+            }
+        }
+
+        if (selectedProduct?.deal !== values?.deal) {
+            theDeal = {
+                deal: values?.deal
+            }
+        }
+
+        if (selectedProduct?.weight_unit !== values?.weight_unit) {
+            theWeightUnit = {
+                weight_unit: values?.weight_unit
+            }
+        }
+
+        if (selectedProduct?.weight !== values?.weight) {
+            theWeight = {
+                weight: values?.weight
+            }
+        }
+
+        if (values?.image) {
+            theImage = {
+                image: myImageURL
+            }
+
+            theImageForStripe = {
+                productImage: myImageURL
+            }
+        }
+
+        // const myProduct = {
+        //     name: upperCaseFunction(values?.name),
+        //     description: values?.description.trim(),
+        //     quantity: values?.quantity,
+        //     price: values?.price,
+        //     category: values?.category,
+        //     sub_category: values?.sub_category,
+        //     operating_system: values?.operating_system,
+        //     status: values?.status,
+        //     deal: values?.deal,
+        //     weight_unit: values?.weight_unit,
+        //     weight: values?.weight,
+        //     image: myImageURL,
+        //     image_file_id: myImageFileId,
+        // }
+
         try {
-            await db.products.update(selectedProduct?.$id, myProduct);
-            getAllProducts()
-            clearProductForm()
+            await fetch('https://66b94e60ecb482096469.appwrite.global/update_product', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    productId: selectedProduct?.stripe_product_id,
+                    priceId: selectedProduct?.stripe_price_id,
+                    ...theNameForStripe,
+                    ...theDescriptionForStripe,
+                    ...thePriceForStripe,
+                    ...theImageForStripe
+                })
+            })
+                .then(async (res) => {
+                    const data = await res.json()
+
+                    if (selectedProduct?.stripe_price_id !== data?.newPriceId) {
+                        theStripePriceID = {
+                            stripe_price_id: data?.newPriceId
+                        }
+                    }
+
+                    const myProduct = {
+                        ...theName,
+                        ...theDescription,
+                        ...theQuantity,
+                        ...thePrice,
+                        ...theCategory,
+                        ...theSubCategory,
+                        ...theOperatingSystem,
+                        ...theStatus,
+                        ...theDeal,
+                        ...theWeightUnit,
+                        ...theWeight,
+                        ...theImage,
+                        ...theStripePriceID
+                    }
+
+                    await db.products.update(selectedProduct?.$id, myProduct);
+                    getAllProducts()
+                    clearProductForm()
+                })
+
         } catch (error) {
             console.log(error)
         }
@@ -425,6 +612,17 @@ const ProductsPage = () => {
         setImage(null)
         setLoading(false)
     };
+
+    if (!allTheProducts) {
+        return (
+            <div className='flex space-x-2 justify-center items-center h-screen'>
+                <span className='sr-only'>Loading...</span>
+                <div className='h-8 w-8 bg-rose-800 rounded-full animate-bounce [animation-delay:-0.3s]'></div>
+                <div className='h-8 w-8 bg-rose-800 rounded-full animate-bounce [animation-delay:-0.15s]'></div>
+                <div className='h-8 w-8 bg-rose-800 rounded-full animate-bounce'></div>
+            </div>
+        );
+    }
 
     return (
         <>
@@ -485,8 +683,25 @@ const ProductsPage = () => {
                                                     <SheetClose asChild>
                                                         <Button type="button" className='bg-red-500 hover:bg-red-700 text-gray-100' onClick={clearProductForm}>Cancelar</Button>
                                                     </SheetClose>
-                                                    <Button type="submit" className='bg-indigo-600 hover:bg-black'>
-                                                        {isUpdateActive ? loading ? 'Actualizando...' : 'Actualizar' : loading ? 'Agregando...' : 'Crear Producto'}
+                                                    <Button type="submit" className='bg-gray-900 hover:bg-rose-600'>
+                                                        {/* {isUpdateActive ? loading ? 'Actualizando...' : 'Actualizar' : loading ? 'Agregando...' : 'Crear Producto'} */}
+                                                        {isUpdateActive ? loading ?
+                                                            <>
+                                                                <svg width="20" height="20" fill="currentColor" className="mr-2 animate-spin" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path d="M526 1394q0 53-37.5 90.5t-90.5 37.5q-52 0-90-38t-38-90q0-53 37.5-90.5t90.5-37.5 90.5 37.5 37.5 90.5zm498 206q0 53-37.5 90.5t-90.5 37.5-90.5-37.5-37.5-90.5 37.5-90.5 90.5-37.5 90.5 37.5 37.5 90.5zm-704-704q0 53-37.5 90.5t-90.5 37.5-90.5-37.5-37.5-90.5 37.5-90.5 90.5-37.5 90.5 37.5 37.5 90.5zm1202 498q0 52-38 90t-90 38q-53 0-90.5-37.5t-37.5-90.5 37.5-90.5 90.5-37.5 90.5 37.5 37.5 90.5zm-964-996q0 66-47 113t-113 47-113-47-47-113 47-113 113-47 113 47 47 113zm1170 498q0 53-37.5 90.5t-90.5 37.5-90.5-37.5-37.5-90.5 37.5-90.5 90.5-37.5 90.5 37.5 37.5 90.5zm-640-704q0 80-56 136t-136 56-136-56-56-136 56-136 136-56 136 56 56 136zm530 206q0 93-66 158.5t-158 65.5q-93 0-158.5-65.5t-65.5-158.5q0-92 65.5-158t158.5-66q92 0 158 66t66 158z">
+                                                                    </path>
+                                                                </svg>
+                                                                Actualizando...
+                                                            </>
+                                                            : 'Actualizar' : loading ?
+                                                            <>
+                                                                <svg width="20" height="20" fill="currentColor" className="mr-2 animate-spin" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path d="M526 1394q0 53-37.5 90.5t-90.5 37.5q-52 0-90-38t-38-90q0-53 37.5-90.5t90.5-37.5 90.5 37.5 37.5 90.5zm498 206q0 53-37.5 90.5t-90.5 37.5-90.5-37.5-37.5-90.5 37.5-90.5 90.5-37.5 90.5 37.5 37.5 90.5zm-704-704q0 53-37.5 90.5t-90.5 37.5-90.5-37.5-37.5-90.5 37.5-90.5 90.5-37.5 90.5 37.5 37.5 90.5zm1202 498q0 52-38 90t-90 38q-53 0-90.5-37.5t-37.5-90.5 37.5-90.5 90.5-37.5 90.5 37.5 37.5 90.5zm-964-996q0 66-47 113t-113 47-113-47-47-113 47-113 113-47 113 47 47 113zm1170 498q0 53-37.5 90.5t-90.5 37.5-90.5-37.5-37.5-90.5 37.5-90.5 90.5-37.5 90.5 37.5 37.5 90.5zm-640-704q0 80-56 136t-136 56-136-56-56-136 56-136 136-56 136 56 56 136zm530 206q0 93-66 158.5t-158 65.5q-93 0-158.5-65.5t-65.5-158.5q0-92 65.5-158t158.5-66q92 0 158 66t66 158z">
+                                                                    </path>
+                                                                </svg>
+                                                                Agregando...
+                                                            </>
+                                                            : 'Crear Producto'}
                                                     </Button>
                                                 </div>
                                             </div>
@@ -848,11 +1063,12 @@ const ProductsPage = () => {
                                                                                 placeholder="Imagen"
                                                                                 accept="image/*"
                                                                                 id='upload'
-                                                                                onChange={(event) =>
-                                                                                    [
-                                                                                        onChange(event.target.files && event.target.files[0]),
+                                                                                onChange={(event) => {
+                                                                                    const str = event.target.files && event.target.files[0].name.split('.')
+                                                                                    const newFile = new File(event.target?.files && event.target.files as any, formToCreateProduct.getValues()?.name.toUpperCase() as string + `.${str && str.slice(-1)}`, { type: event.target?.files && event.target.files[0].type as any })
+                                                                                    onChange(newFile),
                                                                                         getImage(formToCreateProduct.getValues().image)
-                                                                                    ]
+                                                                                }
                                                                                 }
                                                                             />
                                                                         </FormItem>
@@ -884,7 +1100,7 @@ const ProductsPage = () => {
             </div >
 
             {
-                allTheProducts.length === 0 ?
+                allTheProducts && allTheProducts?.length === 0 ?
                     (
                         <div className="flex flex-1 items-center justify-center rounded-lg">
                             <div className="flex flex-col items-center gap-1 text-center">

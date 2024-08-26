@@ -135,8 +135,8 @@ const AdminLayout = () => {
                             </SheetTrigger>
                             <SheetContent side="left" className="flex flex-col bg-slate-800 border border-transparent">
 
-                                <div className="flex items-center justify-center px-4">
-                                    <div className="flex flex-col items-center py-1.5">
+                                <div className="flex items-center justify-center px-4 border-b border-gray-400">
+                                    <div className="flex flex-col items-center py-4">
 
                                         <img
                                             className="mx-auto rounded-xl"
@@ -146,11 +146,11 @@ const AdminLayout = () => {
                                             alt="Logo"
                                         />
 
-                                        <span className="text-xl lg:text-2xl text-amber-400">Sellify eCommerce</span>
+                                        <span className="pt-3 text-base lg:text-2xl text-gray-100 font-bold">Sellify eCommerce</span>
                                     </div>
                                 </div>
 
-                                <nav className="grid gap-2 text-lg font-medium px-4">
+                                <nav className="grid gap-2 text-xl font-medium px-4">
                                     {adminNavigation.map((item) => (
                                         <Link
                                             key={item.title}
@@ -222,14 +222,14 @@ const AdminLayout = () => {
                                     </Avatar>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                    <DropdownMenuLabel className='text-center'>Mi Cuenta</DropdownMenuLabel>
+                                    <DropdownMenuLabel className='text-center text-base'>Mi Cuenta</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     {/* <DropdownMenuItem>Settings</DropdownMenuItem>
                                 <DropdownMenuItem>Support</DropdownMenuItem> */}
                                     {/* <DropdownMenuSeparator /> */}
                                     <DropdownMenuItem className='cursor-pointer'>
                                         <button
-                                            className='w-full text-center text-red-700 font-bold'
+                                            className='w-full text-base text-center text-red-700 font-bold'
                                             onClick={() => setAlertDialogForLogout(true)}
                                         >
                                             Salir
