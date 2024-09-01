@@ -287,7 +287,7 @@ const RegisterPage = () => {
                                     </div>
 
                                     <div className='pt-4 grid grid-flow-col justify-strech gap-4'>
-                                        <Button type="submit" className='bg-[#143a63] text-lg'>
+                                        <Button type="submit" className='bg-[#143a63] hover:bg-blue-700 text-lg'>
 
                                             {loading ?
                                                 <>

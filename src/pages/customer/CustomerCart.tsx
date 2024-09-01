@@ -242,6 +242,7 @@ const CustomerCartPage = () => {
 
         const myDataToBuy = {
             customerID: customerInSession?.id,
+            customerName: customerInSession?.names + ' ' + customerInSession?.lastnames,
             //stripeCustomerID: customerInSession?.stripe_customer_ID,
             cartItems: CartItemsIDsForStripe,
             shippingTotal: shippingTotal,

@@ -194,11 +194,11 @@ const LoginPage = () => {
                                         />
                                     </div>
 
-                                    {/* <div className="mt-4 text-end text-sm">
-                                    <Link to="/reset-password" className="text-blue-700 hover:text-[#143a63] font-bold">
-                                        Olvidé mi contraseña
-                                    </Link>
-                                </div> */}
+                                    <div className="mt-4 text-end text-sm">
+                                        <Link to="/recuperar_password" className="text-rose-700 hover:text-blue-700 font-bold">
+                                            Olvidé mi contraseña
+                                        </Link>
+                                    </div>
 
                                     <div className='pt-8 grid grid-cols-3 justify-strech gap-1'>
                                         <Button type="button" className='bg-gray-900' onClick={() => addUserToInputs('ADMIN')}>Admin</Button>
@@ -210,7 +210,7 @@ const LoginPage = () => {
                                     <div className='pt-8 grid grid-flow-col justify-strech gap-4'>
                                         <Button
                                             type="submit"
-                                            className='bg-[#143a63] hover:bg-blue-800 text-lg'
+                                            className='bg-[#143a63] hover:bg-blue-700 text-lg'
                                             disabled={loading}
                                         >
                                             {loading ?

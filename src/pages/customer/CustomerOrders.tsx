@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -27,6 +28,7 @@ const CustomerOrdersPage = () => {
     const stripe = searchParams.get('stripe')
     const [allTheOrders, setAllTheOrders] = useState<Models.Document[] | null>(null);
     const customerInSession = useSellifyStore((state) => state.customerInSession)
+    const setCustomerCartItemsInSession = useSellifyStore((state) => state.setCustomerCartItemsInSession)
     const [isPaymentSuccessful, setIsPaymentSuccessful] = useState<boolean>(false)
 
     useEffect(() => {
@@ -34,6 +36,7 @@ const CustomerOrdersPage = () => {
         if (stripe && stripe === 'true') {
             setIsPaymentSuccessful(true)
         } else {
+            checkTheCart()
             getAllOrders();
         }
 
@@ -49,8 +52,27 @@ const CustomerOrdersPage = () => {
         setAllTheOrders(orders.documents)
     }
 
+    const checkTheCart = async () => {
+        const cartItems = await db.cartItems.list([
+            Query.equal('customer', customerInSession?.id as string),
+            Query.equal("purchased", "NO")
+        ]);
+
+        let theCartItems: Models.Document | any = [];
+
+        cartItems?.documents?.forEach((ci: Models.Document) => {
+
+            if (ci?.product[0]?.status === 'DISPONIBLE' && ci?.product[0]?.quantity >= ci?.quantity) {
+                theCartItems.push(ci)
+            }
+        });
+
+        setCustomerCartItemsInSession(theCartItems, 'login')
+    }
+
     const reloadThePage = () => {
         navigate('/pedidos')
+        checkTheCart()
         getAllOrders();
     }
 

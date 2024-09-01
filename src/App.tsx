@@ -9,7 +9,8 @@ const PublicLayout = lazy(() => import("./components/PublicLayout"))
 const HomePage = lazy(() => import("./auth/Home"))
 const RegisterPage = lazy(() => import("./auth/Register"))
 const LoginPage = lazy(() => import("./auth/Login"))
-//const ResetPasswordPage = lazy(() => import("./auth/ResetPassword"))
+const ResetPasswordPage = lazy(() => import("./auth/ResetPassword"))
+const NewPasswordPage = lazy(() => import("./auth/NewPassword"))
 const Smartphones = lazy(() => import("./auth/Smartphones"))
 const Smartphone = lazy(() => import("./auth/Smartphone"))
 
@@ -44,7 +45,8 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/productos/:query" element={<Smartphones />} />
               <Route path="/celulares/:id" element={<Smartphone />} />
-              {/* <Route path="/reset-password" element={<ResetPasswordPage />} /> */}
+              <Route path="/recuperar_password" element={<ResetPasswordPage />} />
+              <Route path="/nuevo_password" element={<NewPasswordPage />} />
             </Route>
           </Route>
 

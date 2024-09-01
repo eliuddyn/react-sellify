@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-case-declarations */
 import { Client, Databases, ID } from 'node-appwrite';
 import { Stripe } from 'stripe'
+import { Resend } from 'resend';
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export default async ({ req, res, log, error }) => {
@@ -177,6 +180,7 @@ export default async ({ req, res, log, error }) => {
           customerEmail,
           products,
           customerID,
+          customerName,
           //stripeCustomerID,
           cartItems,
           shippingTotal,
@@ -216,6 +220,8 @@ export default async ({ req, res, log, error }) => {
                 orderNumber: orderNumber,
                 orderDate: orderDate,
                 changesInDbAfterPurchase: changesInDbAfterPurchase,
+                emailCustomerName: customerName,
+                emailCustomer: customerEmail,
                 street_name: 'Calle El Vergel',
                 street_number: '108',
                 neighborhood: 'SONADOR',
@@ -267,6 +273,9 @@ export default async ({ req, res, log, error }) => {
           .setProject(process.env.APPWRITE_PROJECT_ID)
           .setKey(process.env.APPWRITE_SECRET_KEY);
 
+        // Resend Initialization
+        const resend = new Resend(process.env.RESEND_API_KEY);
+
         const databases = new Databases(client);
         const paymentIntent = event?.data?.object
 
@@ -314,8 +323,47 @@ export default async ({ req, res, log, error }) => {
                 { quantity: purchase?.newProductQuantity, sales: purchase?.newProductSales }
               )
             });
-          }
 
+            try {
+
+              // Send receive email to the customer
+              await resend.emails.send({
+                from: 'Somos J. Center <sellify@eliuddy.dev>',
+                to: [`${paymentIntent?.metadata?.emailCustomer}`],
+                subject: 'Somos J. Center - Tu orden',
+                html: `
+                <h3>Hola ${paymentIntent?.metadata?.emailCustomerName}...</h3>
+                <p>Gracias por comprar en Somos J. Center. En este correo podrás descargar el recibo de tu compra.</p>
+
+                <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0">
+  <tr>
+    <td align="center">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td align="center">
+            <table border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td style="padding: 12px 18px 12px 18px; border-radius:5px; background-color: #2563eb;" align="center">
+                  <a rel="noopener" href="${paymentIntent?.invoice_pdf}" style="font-size: 18px; font-family: Helvetica, Arial, sans-serif; font-weight: bold; color: #ffffff; text-decoration: none; display: inline-block;" target="_blank">Descargar recibo</a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+                `
+              });
+
+            } catch (error) {
+              error(error);
+              return res.json({ error }, 500, {
+                'Access-Control-Allow-Origin': '*',
+              })
+            }
+          }
 
         } catch (error) {
           return res.json({ error: error.message }, 500, {
