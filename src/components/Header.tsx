@@ -40,19 +40,22 @@ import {
 } from '@headlessui/react'
 import { CircleX, House } from "lucide-react"
 import { Menu, ShoppingCart } from "lucide-react"
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import 'react-multi-carousel/lib/styles.css';
 import { cn } from '@/lib/utils';
 import { account } from '@/appwrite/config';
 
 type Props = {
-    androidProducts?: Models.Document[],
-    iosProducts?: Models.Document[],
+    theSmartphones?: Models.Document[],
+    theTablets?: Models.Document[],
+    theSmartwatches?: Models.Document[],
+    theAccesories?: Models.Document[],
 }
 
-const Header = ({ androidProducts, iosProducts }: Props) => {
+const Header = ({ theSmartphones, theTablets, theSmartwatches, theAccesories }: Props) => {
 
     const navigate = useNavigate();
+    const location = useLocation();
     const setUserSession = useSellifyStore((state) => state.setUserSession)
     const userSession = useSellifyStore((state) => state.userSession)
     const setCustomerInSession = useSellifyStore((state) => state.setCustomerInSession)
@@ -102,28 +105,39 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                             {/* Links */}
                             <TabGroup className="mt-2">
                                 <div className="border-b border-gray-200">
-                                    <TabList className="-mb-px flex space-x-8 px-4">
+                                    {/* <TabList className="-mb-px flex space-x-8 px-4"> */}
+                                    <TabList className="-mb-px grid grid-cols-2 gap-y-4">
                                         <Tab
-                                            className="flex-1 whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-base font-medium text-gray-900 data-[selected]:border-rose-600 data-[selected]:text-rose-600"
+                                            className="flex-1 whitespace-nowrap border-b-2 border-transparent px-1 py-1 text-base font-medium text-gray-900 focus:outline-none data-[selected]:border-rose-600 data-[selected]:text-rose-600"
                                         >
-                                            ANDROID
+                                            CELULARES
                                         </Tab>
                                         <Tab
-                                            className="flex-1 whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-base font-medium text-gray-900 data-[selected]:border-rose-600 data-[selected]:text-rose-600"
+                                            className="flex-1 whitespace-nowrap border-b-2 border-transparent px-1 py-1 text-base font-medium text-gray-900 focus:outline-none data-[selected]:border-rose-600 data-[selected]:text-rose-600"
                                         >
-                                            IOS
+                                            TABLETS
+                                        </Tab>
+                                        <Tab
+                                            className="flex-1 whitespace-nowrap border-b-2 border-transparent px-1 py-1 text-base font-medium text-gray-900 focus:outline-none data-[selected]:border-rose-600 data-[selected]:text-rose-600"
+                                        >
+                                            SMART WATCHES
+                                        </Tab>
+                                        <Tab
+                                            className="flex-1 whitespace-nowrap border-b-2 border-transparent px-1 py-1 text-base font-medium text-gray-900 focus:outline-none data-[selected]:border-rose-600 data-[selected]:text-rose-600"
+                                        >
+                                            ACCESORIOS
                                         </Tab>
                                     </TabList>
                                 </div>
                                 <TabPanels as={Fragment}>
 
-                                    {/* ANDROID PRODUCTS */}
+                                    {/* SMARTPHONES PRODUCTS */}
                                     <TabPanel className="space-y-12 px-4 py-6">
                                         <div className="grid grid-cols-2 gap-x-4 gap-y-10">
-                                            {androidProducts?.slice(0, 6).map((product: Models.Document) => (
+                                            {theSmartphones?.slice(0, 6).map((product: Models.Document) => (
                                                 <Link
                                                     key={product.$id}
-                                                    to={userSession ? `/tienda/celulares/${product.$id}` : `/celulares/${product.$id}`}
+                                                    to={userSession ? `/tienda/los_productos/${product.$id}` : `/los_productos/${product.$id}`}
                                                     onClick={() => setMenuOpen(false)}
                                                     className="group relative rounded-2xl border border-dashed bg-rose-100 p-1"
                                                 >
@@ -142,13 +156,63 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                                         </div>
                                     </TabPanel>
 
-                                    {/* IOS PRODUCTS */}
+                                    {/* TABLETS PRODUCTS */}
                                     <TabPanel className="space-y-12 px-4 py-6">
                                         <div className="grid grid-cols-2 gap-x-4 gap-y-10">
-                                            {iosProducts?.slice(0, 6).map((product: Models.Document) => (
+                                            {theTablets?.slice(0, 6).map((product: Models.Document) => (
                                                 <Link
                                                     key={product.$id}
-                                                    to={userSession ? `/tienda/celulares/${product.$id}` : `/celulares/${product.$id}`}
+                                                    to={userSession ? `/tienda/los_productos/${product.$id}` : `/los_productos/${product.$id}`}
+                                                    onClick={() => setMenuOpen(false)}
+                                                    className="group relative rounded-2xl border border-dashed bg-rose-100 p-1"
+                                                >
+                                                    <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-xl bg-gray-100 group-hover:opacity-75">
+                                                        <img alt={product.name} src={product.image} className="object-cover object-center" />
+                                                    </div>
+                                                    <span className="mt-6 block text-center text-sm font-medium text-gray-900">
+                                                        <span aria-hidden="true" className="absolute inset-0 z-10" />
+                                                        {product.name}
+                                                    </span>
+                                                    <p aria-hidden="true" className="mt-1 text-center text-sm text-rose-700 font-bold">
+                                                        RD$ {formatPrice(product.price)}
+                                                    </p>
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </TabPanel>
+
+                                    {/* SMART WATCHES PRODUCTS */}
+                                    <TabPanel className="space-y-12 px-4 py-6">
+                                        <div className="grid grid-cols-2 gap-x-4 gap-y-10">
+                                            {theSmartwatches?.slice(0, 6).map((product: Models.Document) => (
+                                                <Link
+                                                    key={product.$id}
+                                                    to={userSession ? `/tienda/los_productos/${product.$id}` : `/los_productos/${product.$id}`}
+                                                    onClick={() => setMenuOpen(false)}
+                                                    className="group relative rounded-2xl border border-dashed bg-rose-100 p-1"
+                                                >
+                                                    <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-xl bg-gray-100 group-hover:opacity-75">
+                                                        <img alt={product.name} src={product.image} className="object-cover object-center" />
+                                                    </div>
+                                                    <span className="mt-6 block text-center text-sm font-medium text-gray-900">
+                                                        <span aria-hidden="true" className="absolute inset-0 z-10" />
+                                                        {product.name}
+                                                    </span>
+                                                    <p aria-hidden="true" className="mt-1 text-center text-sm text-rose-700 font-bold">
+                                                        RD$ {formatPrice(product.price)}
+                                                    </p>
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </TabPanel>
+
+                                    {/* ACCESORIES PRODUCTS */}
+                                    <TabPanel className="space-y-12 px-4 py-6">
+                                        <div className="grid grid-cols-2 gap-x-4 gap-y-10">
+                                            {theAccesories?.slice(0, 6).map((product: Models.Document) => (
+                                                <Link
+                                                    key={product.$id}
+                                                    to={userSession ? `/tienda/los_productos/${product.$id}` : `/los_productos/${product.$id}`}
                                                     onClick={() => setMenuOpen(false)}
                                                     className="group relative rounded-2xl border border-dashed bg-rose-100 p-1"
                                                 >
@@ -170,8 +234,8 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                                 </TabPanels>
                             </TabGroup>
                         </DialogPanel>
-                    </div>
-                </Dialog>
+                    </div >
+                </Dialog >
 
                 <nav aria-label="Top">
 
@@ -194,20 +258,31 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
 
                                     <div className="hidden h-full lg:flex">
                                         {/* Flyout menus */}
-                                        <PopoverGroup className="inset-x-0 bottom-0 px-4">
+                                        <PopoverGroup className={cn(
+                                            location.pathname === '/login' ||
+                                                location.pathname === '/registro' ||
+                                                location.pathname === '/recuperar_password' ||
+                                                location.pathname === '/nuevo_password'
+                                                ? 'hidden' : '',
+                                            "inset-x-0 bottom-0 px-4"
+                                        )}>
                                             <div className="flex h-full justify-center space-x-8">
                                                 <Popover className="flex">
                                                     <div className="relative flex">
-                                                        <PopoverButton className="group relative z-10 flex items-center justify-center text-sm font-medium text-white transition-colors duration-200 ease-out">
-                                                            ANDROID
+                                                        <PopoverButton className="group relative z-10 flex items-center justify-center text-base font-medium text-white hover:text-amber-200 transition-colors duration-200 ease-out">
+
+                                                            <span className='group-data-[open]:text-amber-400'>
+                                                                CELULARES
+                                                            </span>
+
                                                             <span
                                                                 aria-hidden="true"
-                                                                className="absolute inset-x-0 -bottom-px h-1 transition duration-200 ease-out group-data-[open]:bg-rose-400"
+                                                                className="absolute inset-x-0 -bottom-px h-1 transition duration-200 ease-out group-data-[open]:bg-amber-400"
                                                             />
                                                         </PopoverButton>
                                                     </div>
 
-                                                    {/* ANDROID PRODUCTS */}
+                                                    {/* SMARTPHONES PRODUCTS */}
                                                     <PopoverPanel
                                                         transition
                                                         className="absolute inset-x-0 top-full text-sm text-gray-500 transition data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
@@ -218,11 +293,11 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                                                         <div className="relative bg-white">
                                                             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                                                                 <div className="grid grid-cols-4 gap-x-8 gap-y-10 py-16">
-                                                                    {androidProducts?.slice(0, 4).map((product: Models.Document) => (
+                                                                    {theSmartphones?.slice(0, 4).map((product: Models.Document) => (
                                                                         <CloseButton
                                                                             key={product.$id}
                                                                             as={Link}
-                                                                            to={userSession ? `/tienda/celulares/${product.$id}` : `/celulares/${product.$id}`}
+                                                                            to={userSession ? `/tienda/los_productos/${product.$id}` : `/los_productos/${product.$id}`}
                                                                             className="group relative rounded-xl border border-dashed bg-rose-100 hover:bg-rose-200 p-1"
                                                                         >
                                                                             <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-xl bg-gray-100 group-hover:opacity-75">
@@ -249,16 +324,19 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
 
                                                 <Popover className="flex">
                                                     <div className="relative flex">
-                                                        <PopoverButton className="group relative z-10 flex items-center justify-center text-sm font-medium text-white transition-colors duration-200 ease-out">
-                                                            IOS
+                                                        <PopoverButton className="group relative z-10 flex items-center justify-center text-base font-medium text-white hover:text-amber-200 transition-colors duration-200 ease-out">
+                                                            <span className='group-data-[open]:text-amber-400'>
+                                                                TABLETS
+                                                            </span>
+
                                                             <span
                                                                 aria-hidden="true"
-                                                                className="absolute inset-x-0 -bottom-px h-0.5 transition duration-200 ease-out group-data-[open]:bg-amber-400"
+                                                                className="absolute inset-x-0 -bottom-px h-1 transition duration-200 ease-out group-data-[open]:bg-amber-400"
                                                             />
                                                         </PopoverButton>
                                                     </div>
 
-                                                    {/* IOS PRODUCTS */}
+                                                    {/* TABLETS PRODUCTS */}
                                                     <PopoverPanel
                                                         transition
                                                         className="absolute inset-x-0 top-full text-sm text-gray-500 transition data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
@@ -269,11 +347,118 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                                                         <div className="relative bg-white">
                                                             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                                                                 <div className="grid grid-cols-4 gap-x-8 gap-y-10 py-16">
-                                                                    {iosProducts?.slice(0, 4).map((product: Models.Document) => (
+                                                                    {theTablets?.slice(0, 4).map((product: Models.Document) => (
                                                                         <CloseButton
                                                                             key={product.$id}
                                                                             as={Link}
-                                                                            to={userSession ? `/tienda/celulares/${product.$id}` : `/celulares/${product.$id}`}
+                                                                            to={userSession ? `/tienda/los_productos/${product.$id}` : `/los_productos/${product.$id}`}
+                                                                            className="group relative rounded-xl border border-dashed bg-rose-100 hover:bg-rose-200 p-1"
+                                                                        >
+                                                                            <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-xl bg-gray-100 group-hover:opacity-75">
+                                                                                <img
+                                                                                    alt={product.name}
+                                                                                    src={product.image}
+                                                                                    className="object-cover object-center"
+                                                                                />
+                                                                            </div>
+                                                                            <span className="mt-4 block text-center font-medium text-gray-900">
+                                                                                <span aria-hidden="true" className="absolute inset-0 z-10" />
+                                                                                {product.name}
+                                                                            </span>
+                                                                            <p aria-hidden="true" className="mt-1 text-center text-sm text-rose-700 font-bold">
+                                                                                RD$ {formatPrice(product.price)}
+                                                                            </p>
+                                                                        </CloseButton>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </PopoverPanel>
+                                                </Popover>
+                                                <Popover className="flex">
+                                                    <div className="relative flex">
+                                                        <PopoverButton className="group relative z-10 flex items-center justify-center text-base font-medium text-white hover:text-amber-200 transition-colors duration-200 ease-out">
+                                                            <span className='group-data-[open]:text-amber-400'>
+                                                                SMART WATCHES
+                                                            </span>
+
+                                                            <span
+                                                                aria-hidden="true"
+                                                                className="absolute inset-x-0 -bottom-px h-1 transition duration-200 ease-out group-data-[open]:bg-amber-400"
+                                                            />
+                                                        </PopoverButton>
+                                                    </div>
+
+                                                    {/* SMART WATCHES PRODUCTS */}
+                                                    <PopoverPanel
+                                                        transition
+                                                        className="absolute inset-x-0 top-full text-sm text-gray-500 transition data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
+                                                    >
+                                                        {/* Presentational element used to render the bottom shadow, if we put the shadow on the actual panel it pokes out the top, so we use this shorter element to hide the top of the shadow */}
+                                                        <div aria-hidden="true" className="absolute inset-0 top-1/2 bg-white shadow" />
+
+                                                        <div className="relative bg-white">
+                                                            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                                                                <div className="grid grid-cols-4 gap-x-8 gap-y-10 py-16">
+                                                                    {theSmartwatches?.slice(0, 4).map((product: Models.Document) => (
+                                                                        <CloseButton
+                                                                            key={product.$id}
+                                                                            as={Link}
+                                                                            to={userSession ? `/tienda/los_productos/${product.$id}` : `/los_productos/${product.$id}`}
+                                                                            className="group relative rounded-xl border border-dashed bg-rose-100 hover:bg-rose-200 p-1"
+                                                                        >
+                                                                            <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-xl bg-gray-100 group-hover:opacity-75">
+                                                                                <img
+                                                                                    alt={product.name}
+                                                                                    src={product.image}
+                                                                                    className="object-cover object-center"
+                                                                                />
+                                                                            </div>
+                                                                            <span className="mt-4 block text-center font-medium text-gray-900">
+                                                                                <span aria-hidden="true" className="absolute inset-0 z-10" />
+                                                                                {product.name}
+                                                                            </span>
+                                                                            <p aria-hidden="true" className="mt-1 text-center text-sm text-rose-700 font-bold">
+                                                                                RD$ {formatPrice(product.price)}
+                                                                            </p>
+                                                                        </CloseButton>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </PopoverPanel>
+                                                </Popover>
+
+                                                <Popover className="flex">
+                                                    <div className="relative flex">
+                                                        <PopoverButton className="group relative z-10 flex items-center justify-center text-base font-medium text-white hover:text-amber-200 transition-colors duration-200 ease-out">
+                                                            <span className='group-data-[open]:text-amber-400'>
+                                                                ACCESORIOS
+                                                            </span>
+
+                                                            <span
+                                                                aria-hidden="true"
+                                                                className="absolute inset-x-0 -bottom-px h-1 transition duration-200 ease-out group-data-[open]:bg-amber-400"
+                                                            />
+                                                        </PopoverButton>
+                                                    </div>
+
+                                                    {/* ACCESORIES PRODUCTS */}
+                                                    <PopoverPanel
+                                                        transition
+                                                        className="absolute inset-x-0 top-full text-sm text-gray-500 transition data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
+                                                    >
+                                                        {/* Presentational element used to render the bottom shadow, if we put the shadow on the actual panel it pokes out the top, so we use this shorter element to hide the top of the shadow */}
+                                                        <div aria-hidden="true" className="absolute inset-0 top-1/2 bg-white shadow" />
+
+                                                        <div className="relative bg-white">
+                                                            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                                                                <div className="grid grid-cols-4 gap-x-8 gap-y-10 py-16">
+                                                                    {theAccesories?.slice(0, 4).map((product: Models.Document) => (
+                                                                        <CloseButton
+                                                                            key={product.$id}
+                                                                            as={Link}
+                                                                            to={userSession ? `/tienda/los_productos/${product.$id}` : `/los_productos/${product.$id}`}
                                                                             className="group relative rounded-xl border border-dashed bg-rose-100 hover:bg-rose-200 p-1"
                                                                         >
                                                                             <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-xl bg-gray-100 group-hover:opacity-75">
@@ -311,14 +496,22 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                                     </Link> */}
 
                                     {/* Mobile menu (lg-) */}
-                                    <div className="flex flex-1 items-center lg:hidden">
+                                    <div className={cn(
+                                        location.pathname === '/login' ||
+                                            location.pathname === '/registro' ||
+                                            location.pathname === '/recuperar_password' ||
+                                            location.pathname === '/nuevo_password'
+                                            ? 'hidden' : 'flex flex-1 items-center lg:hidden',
+                                        // "flex flex-1 items-center lg:hidden"
+                                    )}
+                                    >
                                         <button
                                             type="button"
                                             onClick={() => setMenuOpen(true)}
                                             className="-ml-2 p-2 text-white"
                                         >
                                             <span className="sr-only">Open menu</span>
-                                            <Menu aria-hidden="true" className="h-8 w-8" />
+                                            <Menu aria-hidden="true" className="h-8 w-8 text-rose-500" />
                                         </button>
                                     </div>
 
@@ -421,10 +614,10 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                         </div>
                     </div>
                 </nav>
-            </header>
+            </header >
 
             {/* LOGOUT ALERTDIALOG */}
-            <AlertDialog open={alertDialogForLogout} onOpenChange={setAlertDialogForLogout}>
+            < AlertDialog open={alertDialogForLogout} onOpenChange={setAlertDialogForLogout} >
                 <AlertDialogContent className='bg-gray-300 border border-gray-600 flex flex-col items-center justify-between'>
                     <AlertDialogHeader>
                         <AlertDialogTitle className='text-gray-800 text-2xl text-center'>¿Está seguro de salir?</AlertDialogTitle>
@@ -440,7 +633,7 @@ const Header = ({ androidProducts, iosProducts }: Props) => {
                         <AlertDialogAction className='bg-rose-500 hover:bg-rose-600' onClick={() => logoutUser()}>SALIR</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
-            </AlertDialog>
+            </AlertDialog >
 
         </>
     )

@@ -18,9 +18,10 @@ type Props = {
 const RecentSales = ({ data }: Props) => {
 
     return (
-        <div className="space-y-8">
-            {data?.map((sale) => (
-                <div key={sale?.orderID} className="flex items-center justify-center">
+        <div>
+            {/* <div className="grid gap-y-0.5"> */}
+            {data?.slice(0, 5).map((sale) => (
+                <div key={sale?.orderID} className="flex items-center justify-center p-1.5 rounded-2xl even:bg-slate-100">
 
                     <Avatar className='h-10 w-10'>
                         <Avatar>
@@ -48,18 +49,19 @@ const RecentSales = ({ data }: Props) => {
                         </Avatar>
                     </Avatar>
 
-                    <div className="ml-2 space-y-0 flex-1">
-                        <p className="text-xs sm:text-sm text-gray-900 font-bold leading-none">{sale?.customerNames}</p>
-                        <p className="text-xs sm:text-sm text-gray-900 font-bold leading-none">{sale?.customerLastnames}</p>
+                    <div className="ml-2 space-y-0.5 flex-1">
+                        <p className="text-xs text-gray-900 font-medium leading-none">{sale?.customerNames}</p>
+                        <p className="text-xs text-gray-900 font-medium leading-none">{sale?.customerLastnames}</p>
                         <p className="text-sm text-muted-foreground">
                             {sale?.customerEmail}
                         </p>
                     </div>
 
-                    <div className="ml-auto text-sm sm:text-base text-pink-800 font-bold">RD$ {formatPrice(sale?.totalAmount)}</div>
+                    <div className="ml-auto text-sm text-pink-800 font-medium">RD$ {formatPrice(sale?.totalAmount)}</div>
                 </div>
             ))}
         </div>
+        // </div>
     )
 }
 

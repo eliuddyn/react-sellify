@@ -54,6 +54,18 @@ const Smartphones = () => {
                     theProductsToShow.push(product)
                 }
             })
+        } else if (query === 'ipad os') {
+            products.documents?.map((product: Models.Document) => {
+                if (product.operating_system === 'IPAD OS') {
+                    theProductsToShow.push(product)
+                }
+            })
+        } else if (query === 'watch os') {
+            products.documents?.map((product: Models.Document) => {
+                if (product.operating_system === 'WATCH OS') {
+                    theProductsToShow.push(product)
+                }
+            })
         } else {
             const categories = await db.categories.list();
 
@@ -145,7 +157,7 @@ const Smartphones = () => {
             <div aria-labelledby="category-heading" className="relative min-h-screen pt-16 xl:mx-auto xl:max-w-7xl xl:px-8">
                 <div className="px-4 pb-6 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8 xl:px-0">
                     <h2 id="category-heading" className="text-2xl md:text-3xl font-bold tracking-tight text-gray-900">
-                        Nuestros Smartphones
+                        Nuestros Productos
                     </h2>
 
                     <div className="mt-10 sm:mt-0 flex items-center justify-center rounded-xl">
@@ -196,7 +208,7 @@ const Smartphones = () => {
                                             return product;
                                         }
                                     })?.map((product: Models.Document) => (
-                                        <Link key={product.$id} to={userSession ? `/tienda/celulares/${product.$id}` : `/celulares/${product.$id}`}
+                                        <Link key={product.$id} to={userSession ? `/tienda/los_productos/${product.$id}` : `/los_productos/${product.$id}`}
                                             className="flex flex-col items-center justify-center bg-gray-100 hover:bg-pink-100 
                                     rounded-xl text-gray-800 border border-dashed p-3"
                                         >
@@ -207,7 +219,8 @@ const Smartphones = () => {
                                                     className="h-full w-full object-cover object-center hover:opacity-70"
                                                 />
                                             </div>
-                                            <h3 className="mt-4 text-base font-bold">{product.name}</h3>
+                                            <h3 className="mt-4 text-sm text-blue-600 font-medium">{product?.category?.name}</h3>
+                                            <h3 className="mt-1 text-base font-bold">{product.name}</h3>
 
                                             {/* <div className="flex items-center">
                                                 <div>

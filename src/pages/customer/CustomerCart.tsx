@@ -365,7 +365,7 @@ const CustomerCartPage = () => {
                                                                             <div>
                                                                                 <h3 className="text-base">
                                                                                     <Link
-                                                                                        to={`/tienda/celulares/${ci?.product[0].$id}`}
+                                                                                        to={`/tienda/los_productos/${ci?.product[0].$id}`}
                                                                                         className="font-bold text-balck-900 hover:text-blue-800"
                                                                                     >
                                                                                         {ci?.product[0].name}
@@ -468,7 +468,7 @@ const CustomerCartPage = () => {
                                                                             <div>
                                                                                 <h3 className="text-base">
                                                                                     <Link
-                                                                                        to={`/tienda/celulares/${ci?.product[0].$id}`}
+                                                                                        to={`/tienda/los_productos/${ci?.product[0].$id}`}
                                                                                         className="font-bold text-balck-900 hover:text-blue-800"
                                                                                     >
                                                                                         {ci?.product[0].name}

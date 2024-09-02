@@ -9,34 +9,48 @@ import Footer from './Footer'
 
 const PublicLayout = () => {
 
-    const [allTheAndroidProducts, setAllTheAndroidProducts] = useState<Models.Document[]>([]);
-    const [allTheIosProducts, setAllTheIosProducts] = useState<Models.Document[]>([]);
+    const [allTheSmartphones, setAllTheSmartphones] = useState<Models.Document[]>([]);
+    const [allTheTablets, setAllTheTablets] = useState<Models.Document[]>([]);
+    const [allTheSmartWatches, setAllTheSmartWatches] = useState<Models.Document[]>([]);
+    const [allTheAccesories, setAllTheAccesories] = useState<Models.Document[]>([]);
 
     useEffect(() => {
-        getProductsByOperatingSystem()
+        getProductsByCategory()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const getProductsByOperatingSystem = async () => {
+    const getProductsByCategory = async () => {
 
-        let androidProducts: any[] = []
-        let iosProducts: any[] = []
+        let smartphones: any[] = []
+        let tablets: any[] = []
+        let smartWatches: any[] = []
+        let accesories: any[] = []
 
         const products = await db.products.list();
 
         products.documents?.map((product: Models.Document) => {
 
-            if (product.operating_system === 'ANDROID') {
-                androidProducts.push(product)
+            if (product?.category?.name === 'CELULARES') {
+                smartphones.push(product)
             }
 
-            if (product.operating_system === 'IOS') {
-                iosProducts.push(product)
+            if (product?.category?.name === 'TABLETS') {
+                tablets.push(product)
+            }
+
+            if (product?.category?.name === 'SMART WATCHES') {
+                smartWatches.push(product)
+            }
+
+            if (product?.category?.name === 'ACCESORIOS') {
+                accesories.push(product)
             }
         })
 
-        setAllTheAndroidProducts(androidProducts)
-        setAllTheIosProducts(iosProducts)
+        setAllTheSmartphones(smartphones)
+        setAllTheTablets(tablets)
+        setAllTheSmartWatches(smartWatches)
+        setAllTheAccesories(accesories)
     }
 
     return (
@@ -44,7 +58,12 @@ const PublicLayout = () => {
         // <div className='grid grid-rows-[auto_1fr_auto] min-h-dvh'>
         <div className=''>
             {/* HEADER */}
-            <Header androidProducts={allTheAndroidProducts} iosProducts={allTheIosProducts} />
+            <Header
+                theSmartphones={allTheSmartphones}
+                theTablets={allTheTablets}
+                theSmartwatches={allTheSmartWatches}
+                theAccesories={allTheAccesories}
+            />
 
             {/* CHILDREN */}
             <Outlet />

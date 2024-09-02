@@ -140,6 +140,20 @@ const ProductsPage = () => {
             ),
         },
         {
+            accessorKey: "category",
+            header: "Categoría",
+            cell: ({ row }) => (
+                <span className='font-medium text-xs'>{row?.original?.category?.name}</span>
+            ),
+        },
+        {
+            accessorKey: "sub_category",
+            header: "Sub-Categoría",
+            cell: ({ row }) => (
+                <span className='font-medium text-xs'>{row?.original?.sub_category}</span>
+            ),
+        },
+        {
             accessorKey: "status",
             header: "Estado",
             cell: ({ row }) => (
@@ -168,15 +182,15 @@ const ProductsPage = () => {
                 <span className='font-medium text-xs text-gray-800'>{row?.original?.sales}</span>
             ),
         },
-        {
-            accessorKey: "sku",
-            header: "SKU",
-            cell: ({ row }) => (
-                <span className='text-blue-700 font-medium'>
-                    {row?.original?.sku}
-                </span>
-            ),
-        },
+        // {
+        //     accessorKey: "sku",
+        //     header: "SKU",
+        //     cell: ({ row }) => (
+        //         <span className='text-blue-700 font-medium'>
+        //             {row?.original?.sku}
+        //         </span>
+        //     ),
+        // },
         // {
         //     accessorKey: "gender",
         //     header: "Sexo",
@@ -683,8 +697,7 @@ const ProductsPage = () => {
                                                     <SheetClose asChild>
                                                         <Button type="button" className='bg-red-500 hover:bg-red-700 text-gray-100' onClick={clearProductForm}>Cancelar</Button>
                                                     </SheetClose>
-                                                    <Button type="submit" className='bg-gray-900 hover:bg-rose-600'>
-                                                        {/* {isUpdateActive ? loading ? 'Actualizando...' : 'Actualizar' : loading ? 'Agregando...' : 'Crear Producto'} */}
+                                                    <Button type="submit" className='bg-gray-900 hover:bg-blue-600'>
                                                         {isUpdateActive ? loading ?
                                                             <>
                                                                 <svg width="20" height="20" fill="currentColor" className="mr-2 animate-spin" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
@@ -880,7 +893,6 @@ const ProductsPage = () => {
                                                             </CardContent>
                                                         </Card>
 
-
                                                         <Card>
                                                             <CardHeader>
                                                                 <CardTitle>Sistema Operativo</CardTitle>
@@ -900,8 +912,11 @@ const ProductsPage = () => {
                                                                                     </SelectTrigger>
                                                                                 </FormControl>
                                                                                 <SelectContent className="max-h-[--radix-select-content-available-height]">
+                                                                                    <SelectItem value="N/A">N/A</SelectItem>
                                                                                     <SelectItem value="ANDROID">ANDROID</SelectItem>
                                                                                     <SelectItem value="IOS">IOS</SelectItem>
+                                                                                    <SelectItem value="IPAD OS">IPAD OS</SelectItem>
+                                                                                    <SelectItem value="WATCH OS">WATCH OS</SelectItem>
                                                                                 </SelectContent>
                                                                             </Select>
                                                                             <FormMessage className='text-red-800' />
@@ -1083,7 +1098,7 @@ const ProductsPage = () => {
                                             </div>
                                             <div className="flex items-center justify-center gap-2 md:hidden">
                                                 <SheetClose asChild>
-                                                    <Button type="button" className='bg-red-500 hover:bg-rose-700 text-gray-100 dark:text-gray-100' onClick={clearProductForm}>Cancelar</Button>
+                                                    <Button type="button" className='bg-red-500 hover:bg-blue-600 text-gray-100 dark:text-gray-100' onClick={clearProductForm}>Cancelar</Button>
                                                 </SheetClose>
                                                 <Button type="submit" variant='default'>
                                                     {isUpdateActive ? loading ? 'Actualizando...' : 'Actualizar' : loading ? 'Agregando...' : 'Crear Producto'}

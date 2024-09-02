@@ -184,7 +184,7 @@ const CustomerOrdersPage = () => {
                                                                         />
                                                                         <div>
                                                                             <div className="font-medium text-gray-800 hover:text-blue-700">
-                                                                                <Link to={`/tienda/celulares/${ci?.product[0].$id}`}>
+                                                                                <Link to={`/tienda/los_productos/${ci?.product[0].$id}`}>
                                                                                     <span>{ci?.product[0].name}</span>
                                                                                     <span className="sr-only">, {ci?.product[0].name}</span>
                                                                                 </Link>

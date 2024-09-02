@@ -178,7 +178,7 @@ const OrdersPage = () => {
                                                         <td className="hidden font-medium text-gray-900 py-6 pr-8 sm:table-cell">{ci?.quantity}</td>
                                                         <td className="hidden font-medium text-gray-900 py-6 pr-8 sm:table-cell">{ci?.product[0].operating_system}</td>
                                                         {/* <td className="whitespace-nowrap py-6 pr-3 font-bold">
-                                                            <Link to={`/tienda/celulares/${ci?.product[0].$id}`} className="text-indigo-600 hover:text-pink-800">
+                                                            <Link to={`/tienda/los_productos/${ci?.product[0].$id}`} className="text-indigo-600 hover:text-pink-800">
                                                                 Ver<span className="hidden lg:inline"> Producto</span>
                                                                 <span className="sr-only">, {ci?.product[0].name}</span>
                                                             </Link>

@@ -108,20 +108,23 @@ const Smartphone = () => {
     }
 
     const verifyIfCustomerHasPurchasedThisProduct = async () => {
-        const cartItems = await db.cartItems.list([
-            Query.equal('customer', customerInSession?.id as string),
-            Query.equal("purchased", "YES"),
-        ]);
 
-        cartItems?.documents?.forEach((ci: Models.Document) => {
+        if (customerInSession) {
+            const cartItems = await db.cartItems.list([
+                Query.equal('customer', customerInSession?.id as string),
+                Query.equal("purchased", "YES"),
+            ]);
 
-            ci?.product?.forEach((ciP: Models.Document) => {
-                if (ciP?.$id === id as string) {
-                    setIsTheProductPurchased(true)
-                }
-            })
+            cartItems?.documents?.forEach((ci: Models.Document) => {
 
-        });
+                ci?.product?.forEach((ciP: Models.Document) => {
+                    if (ciP?.$id === id as string) {
+                        setIsTheProductPurchased(true)
+                    }
+                })
+
+            });
+        }
     }
 
     const getAllTheReviews = async () => {
@@ -300,7 +303,8 @@ const Smartphone = () => {
                     </nav> */}
 
                             <div className="mt-4">
-                                <h1 className="text-xl sm:text-3xl font-bold tracking-tight text-gray-800">{theProduct?.name}</h1>
+                                <h3 className="text-sm text-blue-600 font-medium">{theProduct?.category?.name}</h3>
+                                <h1 className="mt-4 text-xl sm:text-3xl font-bold tracking-tight text-gray-800">{theProduct?.name}</h1>
                             </div>
 
                             <section aria-labelledby="information-heading" className="mt-4">

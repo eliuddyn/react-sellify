@@ -147,7 +147,7 @@ const AdminDashboardPage = () => {
                                 <div className="text-2xl text-gray-800 font-bold">{adminDashboardData?.customers?.totalCustomers}</div>
                             </CardContent>
                         </Card>
-                        <Card className="bg-fuchsia-200">
+                        <Card className="bg-blue-200 md:bg-fuchsia-200">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium">
                                     PRODUCTOS
@@ -169,7 +169,7 @@ const AdminDashboardPage = () => {
                                 <div className="text-2xl text-gray-800 font-bold">{adminDashboardData?.totalProducts}</div>
                             </CardContent>
                         </Card>
-                        <Card className="bg-blue-200">
+                        <Card className="bg-fuchsia-200 md:bg-blue-200">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium">VENTAS</CardTitle>
                                 <svg

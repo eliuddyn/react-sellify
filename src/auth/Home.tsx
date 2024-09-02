@@ -50,32 +50,24 @@ const HomePage = () => {
     const getAllCategories = async () => {
         const categories = await db.categories.list();
 
-        const categoriesByName = categories.documents;
+        let allSubCategories: string[] = [];
 
-        setAllTheSubCategories(categoriesByName[0]?.sub_categories)
+        categories.documents?.forEach((category: Models.Document) => {
+
+            if (category.name !== 'ACCESORIOS') {
+                category.sub_categories.forEach((subCategory: string) => {
+                    allSubCategories.push(subCategory);
+                });
+            }
+        });
+
+        setAllTheSubCategories([...new Set(allSubCategories)])
     }
 
     const getAllProducts = async () => {
         const products = await db.products.list();
-        getProductsByOperatingSystem(products.documents)
+        //getProductsByOperatingSystem(products.documents)
         setAllTheProducts(products.documents)
-    }
-
-    const getProductsByOperatingSystem = (products: Models.Document[]) => {
-
-        let androidProducts: any[] = []
-        let iosProducts: any[] = []
-
-        products?.map((product: Models.Document) => {
-
-            if (product.operating_system === 'ANDROID') {
-                androidProducts.push(product)
-            }
-
-            if (product.operating_system === 'IOS') {
-                iosProducts.push(product)
-            }
-        })
     }
 
     return (
@@ -163,7 +155,7 @@ const HomePage = () => {
 
                             <div className="grid justify-items-center grid-cols-1 gap-y-8 gap-x-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                                 {allTheProducts.slice(0, 8).map((product: Models.Document) => (
-                                    <Link key={product.$id} to={userSession ? `/tienda/celulares/${product.$id}` : `/celulares/${product.$id}`}
+                                    <Link key={product.$id} to={userSession ? `/tienda/los_productos/${product.$id}` : `/los_productos/${product.$id}`}
                                         className="flex flex-col items-center justify-center bg-gray-100 hover:bg-rose-200 
                                     rounded-xl text-gray-800 border border-dashed p-3"
                                     >
@@ -174,7 +166,8 @@ const HomePage = () => {
                                                 className="h-full w-full object-cover object-center hover:opacity-70"
                                             />
                                         </div>
-                                        <h3 className="mt-4 text-lg font-bold">{product.name}</h3>
+                                        <h3 className="mt-4 text-sm text-blue-600 font-medium">{product?.category?.name}</h3>
+                                        <h3 className="mt-1 text-lg font-bold">{product.name}</h3>
                                         <h3 className="text-sm text-gray-700">{product?.reviews?.length} {product?.reviews?.length > 1 ? 'reseñas' : 'reseña'}</h3>
                                         <p className="mt-3 text-base font-medium text-gray-800">RD$ {formatPrice(product?.price)}</p>
                                     </Link>
@@ -209,16 +202,16 @@ const HomePage = () => {
                             <div className="relative mx-auto flex max-w-3xl flex-col items-center text-center">
                                 <h2 id="social-impact-heading" className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
                                     <span className="block sm:inline">Encuentra Tu </span>
-                                    <span className="block sm:inline">Smartphone Perfecto</span>
+                                    <span className="block sm:inline">Producto Perfecto</span>
                                 </h2>
                                 <p className="mt-3 text-xl text-white">
-                                    Descubre modelos con cámaras de alta resolución, baterías de larga duración, y pantallas impresionantes que transformarán tu experiencia digital.
+                                    Descubre Smartphones, Tablets, Smart Watches y todos los accesorios que necesitas.
                                 </p>
                                 <Link
                                     to={userSession ? "/tienda/productos/todos" : "/productos/todos"}
                                     className="mt-8 block w-full rounded-md border border-transparent bg-white px-8 py-3 text-base font-medium text-gray-900 hover:text-white hover:bg-rose-500 sm:w-auto"
                                 >
-                                    Ver los Smartphones
+                                    Ver los productos
                                 </Link>
                             </div>
                         </div>
@@ -237,8 +230,9 @@ const HomePage = () => {
                         Los sistemas operativos más utilizados en el planeta.
                     </p>
 
-                    <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <Link to={userSession ? `/tienda/productos/android` : `/productos/android`} className="group block">
+                    <div className="mt-10 grid md:grid-cols-2 gap-3">
+
+                        <Link to={userSession ? `/tienda/productos/android` : `/productos/android`} className="flex">
                             <div
                                 aria-hidden="true"
                                 className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg lg:aspect-h-6 lg:aspect-w-5 group-hover:opacity-90"
@@ -251,7 +245,7 @@ const HomePage = () => {
                             </div>
                         </Link>
 
-                        <Link to={userSession ? `/tienda/productos/ios` : `/productos/ios`} className="group block">
+                        <Link to={userSession ? `/tienda/productos/ios` : `/productos/ios`} className="flex">
                             <div
                                 aria-hidden="true"
                                 className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg lg:aspect-h-6 lg:aspect-w-5 group-hover:opacity-90"
@@ -259,6 +253,32 @@ const HomePage = () => {
                                 <img
                                     alt='IOS'
                                     src='/ios.jpg'
+                                    className="h-full w-full object-cover object-center"
+                                />
+                            </div>
+                        </Link>
+
+                        <Link to={userSession ? `/tienda/productos/ipad os` : `/productos/ipad os`} className="flex">
+                            <div
+                                aria-hidden="true"
+                                className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg lg:aspect-h-6 lg:aspect-w-5 group-hover:opacity-90"
+                            >
+                                <img
+                                    alt='IPADOS'
+                                    src='/ipados.jpg'
+                                    className="h-full w-full object-cover object-center"
+                                />
+                            </div>
+                        </Link>
+
+                        <Link to={userSession ? `/tienda/productos/watch os` : `/productos/watch os`} className="flex">
+                            <div
+                                aria-hidden="true"
+                                className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg lg:aspect-h-6 lg:aspect-w-5 group-hover:opacity-90"
+                            >
+                                <img
+                                    alt='WATCHOS'
+                                    src='/watchos.jpg'
                                     className="h-full w-full object-cover object-center"
                                 />
                             </div>

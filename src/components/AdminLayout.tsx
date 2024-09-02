@@ -26,7 +26,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet"
 import useSellifyStore from '@/store/user'
 import { account } from '@/appwrite/config'
 import { adminNavigation } from '@/lib/routes'
@@ -50,12 +50,12 @@ const AdminLayout = () => {
     return (
 
         <>
-            <div className="grid w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+            <div className="grid w-full lg:grid-cols-[220px_1fr]">
 
                 {/* DESTKOP SIDEBAR */}
-                <div className="hidden border-r border-gray-700 bg-slate-800 md:block h-screen sticky top-0">
+                <div className="hidden border-r border-gray-700 bg-slate-800 lg:block h-screen sticky top-0">
                     <div className="flex h-full max-h-screen flex-col gap-2">
-                        <div className="flex items-center justify-center px-4">
+                        <div className="flex items-center justify-center px-4 pt-3">
                             <div className="flex flex-col items-center py-1.5">
 
                                 <img
@@ -66,15 +66,15 @@ const AdminLayout = () => {
                                     alt="Logo"
                                 />
 
-                                <span className="text-xl lg:text-2xl text-amber-400">Sellify eCommerce</span>
+                                <span className="pt-2 text-xl text-gray-100">Sellify eCommerce</span>
                             </div>
                             {/* <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
                             <Bell className="h-4 w-4" />
                             <span className="sr-only">Toggle notifications</span>
                         </Button> */}
                         </div>
-                        <div className="flex-1 border-t border-gray-700">
-                            <nav className="grid gap-1 items-start px-2 py-5 text-xl font-medium lg:px-4">
+                        <div className="flex-1 border-t border-gray-600">
+                            <nav className="grid gap-1 items-start px-3 py-5 text-base font-medium">
                                 {adminNavigation.map((item) => (
                                     <Link
                                         key={item.title}
@@ -121,21 +121,23 @@ const AdminLayout = () => {
 
                 {/* MOBILE SIDEBAR */}
                 <div className="flex flex-col">
-                    <header className="flex h-14 items-center gap-4 border-b bg-slate-800 px-4 lg:h-[60px] lg:px-6">
+                    <header className="flex h-14 items-center gap-4 border-b bg-slate-800 px-4">
                         <Sheet open={isSheetOpened} onOpenChange={setIsSheetOpened}>
                             <SheetTrigger asChild>
                                 <Button
                                     variant="outline"
                                     size="icon"
-                                    className="shrink-0 md:hidden"
+                                    className="shrink-0 lg:hidden"
                                 >
                                     <Menu className="h-5 w-5" />
                                     <span className="sr-only">Toggle navigation menu</span>
                                 </Button>
                             </SheetTrigger>
-                            <SheetContent side="left" className="flex flex-col bg-slate-800 border border-transparent">
+                            <SheetContent side="left" className="flex flex-col bg-slate-800 border border-transparent focus:outline-none">
 
-                                <div className="flex items-center justify-center px-4 border-b border-gray-400">
+                                <SheetTitle></SheetTitle>
+                                <SheetDescription></SheetDescription>
+                                <div className="flex items-center justify-center px-4 border-b border-gray-600">
                                     <div className="flex flex-col items-center py-4">
 
                                         <img

@@ -92,7 +92,7 @@ const CategoriesPage = () => {
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <span className='cursor-pointer text-blue-700 font-bold'>Ver Sub-Categorias</span>
+                            <span className='cursor-pointer text-blue-700 font-bold'>Ver Sub-Categorías</span>
                         </TooltipTrigger>
                         <TooltipContent className='text-red-800 font-bold'>
                             {/* {row.original?.sub_categories?.join(', ')} */}
@@ -162,9 +162,7 @@ const CategoriesPage = () => {
     const getAllCategories = async () => {
         const categories = await db.categories.list();
 
-        const categoriesByName = categories.documents;
-
-        categoriesByName.sort(function (a: any, b: any) {
+        categories.documents.sort(function (a: any, b: any) {
             if (a?.name < b?.name) {
                 return -1;
             }
@@ -174,7 +172,7 @@ const CategoriesPage = () => {
             return 0;
         });
 
-        setAllTheCategories(categoriesByName)
+        setAllTheCategories(categories.documents)
     }
 
     async function createCategory(values: z.infer<typeof categoryFormSchema>) {
@@ -193,8 +191,8 @@ const CategoriesPage = () => {
         }
 
         try {
-            const response = await db.categories.create(myCategory);
-            setAllTheCategories(response)
+            await db.categories.create(myCategory)
+            getAllCategories()
             clearCategoryForm()
 
         } catch (error) {

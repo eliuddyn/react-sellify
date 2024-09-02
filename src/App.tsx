@@ -44,7 +44,7 @@ function App() {
               <Route path="/registro" element={<RegisterPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/productos/:query" element={<Smartphones />} />
-              <Route path="/celulares/:id" element={<Smartphone />} />
+              <Route path="/los_productos/:id" element={<Smartphone />} />
               <Route path="/recuperar_password" element={<ResetPasswordPage />} />
               <Route path="/nuevo_password" element={<NewPasswordPage />} />
             </Route>
@@ -63,7 +63,7 @@ function App() {
             <Route element={<CustomerLayout />} path="/">
               <Route path="/tienda" element={<HomePage />} />
               <Route path="/tienda/productos/:query" element={<Smartphones />} />
-              <Route path="/tienda/celulares/:id" element={<Smartphone />} />
+              <Route path="/tienda/los_productos/:id" element={<Smartphone />} />
               <Route path="/perfil" element={<CustomerProfilePage />} />
               <Route path="/pedidos" element={<CustomerOrdersPage />} />
               <Route path="/carrito" element={<CustomerCartPage />} />
