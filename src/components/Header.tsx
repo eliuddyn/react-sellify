@@ -41,7 +41,6 @@ import {
 import { CircleX, House } from "lucide-react"
 import { Menu, ShoppingCart } from "lucide-react"
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import 'react-multi-carousel/lib/styles.css';
 import { cn } from '@/lib/utils';
 import { account } from '@/appwrite/config';
 
@@ -105,7 +104,6 @@ const Header = ({ theSmartphones, theTablets, theSmartwatches, theAccesories }: 
                             {/* Links */}
                             <TabGroup className="mt-2">
                                 <div className="border-b border-gray-200">
-                                    {/* <TabList className="-mb-px flex space-x-8 px-4"> */}
                                     <TabList className="-mb-px grid grid-cols-2 gap-y-4">
                                         <Tab
                                             className="flex-1 whitespace-nowrap border-b-2 border-transparent px-1 py-1 text-base font-medium text-gray-900 focus:outline-none data-[selected]:border-rose-600 data-[selected]:text-rose-600"

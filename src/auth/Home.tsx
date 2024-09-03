@@ -9,6 +9,7 @@ import useSellifyStore from '@/store/user';
 import { Link } from 'react-router-dom'
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
+import MyCarousel from '@/components/MyCarousel';
 
 const responsive = {
     xl: {
@@ -37,8 +38,8 @@ const responsive = {
 const HomePage = () => {
 
     const [allTheProducts, setAllTheProducts] = useState<Models.Document[]>([]);
+    const [allTheDealProducts, setAllTheDealProducts] = useState<Models.Document[] | null>(null);
     const [allTheSubCategories, setAllTheSubCategories] = useState<string[]>([]);
-
     const userSession = useSellifyStore((state) => state.userSession)
 
     useEffect(() => {
@@ -66,13 +67,35 @@ const HomePage = () => {
 
     const getAllProducts = async () => {
         const products = await db.products.list();
-        //getProductsByOperatingSystem(products.documents)
+        let allDealProducts: Models.Document[] = [];
+
+        products.documents?.forEach((product: Models.Document) => {
+            if (product.deal === 'true') {
+                allDealProducts.push(product);
+            }
+        });
+
+        setAllTheDealProducts(allDealProducts)
         setAllTheProducts(products.documents)
     }
 
     return (
 
         <div className="bg-white">
+
+            {/* Carousel Section */}
+            {allTheDealProducts !== null ?
+                (
+                    <MyCarousel products={allTheDealProducts} />
+                )
+                :
+                (
+                    <div className='h-64 flex items-center justify-center'>
+                        <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-rose-600" />
+                    </div>
+                )
+
+            }
 
             {/* Hero section */}
             <div className="relative bg-gray-900">
@@ -157,7 +180,7 @@ const HomePage = () => {
                                 {allTheProducts.slice(0, 8).map((product: Models.Document) => (
                                     <Link key={product.$id} to={userSession ? `/tienda/los_productos/${product.$id}` : `/los_productos/${product.$id}`}
                                         className="flex flex-col items-center justify-center bg-gray-100 hover:bg-rose-200 
-                                    rounded-xl text-gray-800 border border-dashed p-3"
+                                    rounded-xl text-gray-800 border border-dashed p-3 text-center"
                                     >
                                         <div className="h-96 w-[320px] lg:h-80 lg:w-80 xl:w-64 overflow-hidden rounded-lg bg-gray-200">
                                             <img
