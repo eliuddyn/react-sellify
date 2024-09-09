@@ -4,9 +4,6 @@ import { useEffect, useState } from 'react'
 import { ColumnDef } from "@tanstack/react-table";
 import PageHeader from '@/components/PageHeader';
 import MyTable from '@/components/MyTable'
-import { SquarePen } from 'lucide-react';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Models } from 'appwrite';
 import db from '@/appwrite/databases';
@@ -108,30 +105,30 @@ const CustomersPage = () => {
         //         </span>
         //     ),
         // },
-        {
-            accessorKey: "actions",
-            header: "Acciones",
-            cell: () => (
-                <div className='flex gap-3'>
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="default"
-                                    className='rounded-lg h-8 w-8'
-                                // onClick={() => { fillProductToUpdate(row?.original) }}
-                                >
-                                    <span><SquarePen className="h-6 w-6" /></span>
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Perfil</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                </div>
-            ),
-        },
+        // {
+        //     accessorKey: "actions",
+        //     header: "Acciones",
+        //     cell: () => (
+        //         <div className='flex gap-3'>
+        //             <TooltipProvider>
+        //                 <Tooltip>
+        //                     <TooltipTrigger asChild>
+        //                         <Button
+        //                             variant="default"
+        //                             className='rounded-lg h-8 w-8'
+        //                         onClick={() => { fillProductToUpdate(row?.original) }}
+        //                         >
+        //                             <span><SquarePen className="h-6 w-6" /></span>
+        //                         </Button>
+        //                     </TooltipTrigger>
+        //                     <TooltipContent>
+        //                         <p>Perfil</p>
+        //                     </TooltipContent>
+        //                 </Tooltip>
+        //             </TooltipProvider>
+        //         </div>
+        //     ),
+        // },
     ];
 
     useEffect(() => {

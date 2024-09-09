@@ -24,8 +24,7 @@ const CustomersPage = lazy(() => import("./pages/admin/Customers"))
 
 // CUSTOMER ROUTES
 const CustomerLayout = lazy(() => import("./components/CustomerLayout"))
-//const CustomerDashboardPage = lazy(() => import("./pages/customer/CustomerDashboard"))
-const CustomerProfilePage = lazy(() => import("./pages/customer/CustomerProfile"))
+const CustomerAddressesPage = lazy(() => import("./pages/customer/CustomerAddresses"))
 const CustomerOrdersPage = lazy(() => import("./pages/customer/CustomerOrders"))
 const CustomerCartPage = lazy(() => import("./pages/customer/CustomerCart"))
 
@@ -64,7 +63,7 @@ function App() {
               <Route path="/tienda" element={<HomePage />} />
               <Route path="/tienda/productos/:query" element={<Smartphones />} />
               <Route path="/tienda/los_productos/:id" element={<Smartphone />} />
-              <Route path="/perfil" element={<CustomerProfilePage />} />
+              <Route path="/direcciones" element={<CustomerAddressesPage />} />
               <Route path="/pedidos" element={<CustomerOrdersPage />} />
               <Route path="/carrito" element={<CustomerCartPage />} />
             </Route>

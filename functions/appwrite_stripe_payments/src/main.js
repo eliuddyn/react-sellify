@@ -221,15 +221,7 @@ export default async ({ req, res, log, error }) => {
                 orderDate: orderDate,
                 changesInDbAfterPurchase: changesInDbAfterPurchase,
                 emailCustomerName: customerName,
-                emailCustomer: customerEmail,
-                street_name: 'Calle El Vergel',
-                street_number: '108',
-                neighborhood: 'SONADOR',
-                municipal_district: 'VILLA SONADOR',
-                municipality: 'PIEDRA BLANCA',
-                province: 'MONSEÑOR NOUEL',
-                postal_code: '97712',
-                country: 'RD',
+                emailCustomer: customerEmail
               }
             }
           },
@@ -336,24 +328,24 @@ export default async ({ req, res, log, error }) => {
                 <p>Gracias por comprar en Somos J. Center. En este correo podrás descargar el recibo de tu compra.</p>
 
                 <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0">
-  <tr>
-    <td align="center">
-      <table width="100%" border="0" cellspacing="0" cellpadding="0">
-        <tr>
-          <td align="center">
-            <table border="0" cellspacing="0" cellpadding="0">
-              <tr>
-                <td style="padding: 12px 18px 12px 18px; border-radius:5px; background-color: #2563eb;" align="center">
-                  <a rel="noopener" href="${paymentIntent?.invoice_pdf}" style="font-size: 18px; font-family: Helvetica, Arial, sans-serif; font-weight: bold; color: #ffffff; text-decoration: none; display: inline-block;" target="_blank">Descargar recibo</a>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-</table>
+                    <tr>
+                      <td align="center">
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                          <tr>
+                            <td align="center">
+                              <table border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                  <td style="padding: 12px 18px 12px 18px; border-radius:5px; background-color: #2563eb;" align="center">
+                                    <a rel="noopener" href="${paymentIntent?.invoice_pdf}" style="font-size: 18px; font-family: Helvetica, Arial, sans-serif; font-weight: bold; color: #ffffff; text-decoration: none; display: inline-block;" target="_blank">Descargar recibo</a>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
                 `
               });
 

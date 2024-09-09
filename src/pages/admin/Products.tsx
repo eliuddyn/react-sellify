@@ -68,7 +68,7 @@ const productFormSchema = z.object({
     name: z.string({ required_error: "Requerido" }).min(1, { message: "Requerido" }),
     description: z.string({ required_error: "Requerido" }).min(1, { message: "Requerido" }),
     price: z.coerce.number({ required_error: "Requerido" }).positive('Debe ser mayor a 0'),
-    category: z.string({ required_error: "Requerido" }), //.min(1, { message: "Requerido" }),
+    category: z.string({ required_error: "Requerido" }),
     sub_category: z.string({ required_error: "Requerido" }).min(1, { message: "Requerido" }),
     operating_system: z.string({ required_error: "Requerido" }).min(1, { message: "Requerido" }),
     weight_unit: z.string({ required_error: "Requerido" }).min(1, { message: "Requerido" }),
@@ -388,7 +388,6 @@ const ProductsPage = () => {
                                 }
                                 return 0;
                             }))
-                        //setAllTheProducts(theSortOfProducts)
                     }
 
                     clearProductForm()
@@ -448,23 +447,23 @@ const ProductsPage = () => {
             );
         }
 
-        let theName: any
-        let theNameForStripe: any
-        let theDescription: any
-        let theDescriptionForStripe: any
-        let theQuantity: any
-        let thePrice: any
-        let thePriceForStripe: any
-        let theCategory: any
-        let theSubCategory: any
-        let theOperatingSystem: any
-        let theStatus: any
-        let theDeal: any
-        let theWeightUnit: any
-        let theWeight: any
-        let theImage: any
-        let theImageForStripe: any
-        let theStripePriceID: any
+        let theName: any = null
+        let theNameForStripe: any = null
+        let theDescription: any = null
+        let theDescriptionForStripe: any = null
+        let theQuantity: any = null
+        let thePrice: any = null
+        let thePriceForStripe: any = null
+        let theCategory: any = null
+        let theSubCategory: any = null
+        let theOperatingSystem: any = null
+        let theStatus: any = null
+        let theDeal: any = null
+        let theWeightUnit: any = null
+        let theWeight: any = null
+        let theImage: any = null
+        let theImageForStripe: any = null
+        let theStripePriceID: any = null
 
         if (selectedProduct?.name !== upperCaseFunction(values?.name)) {
             theName = {
@@ -553,22 +552,6 @@ const ProductsPage = () => {
                 productImage: myImageURL
             }
         }
-
-        // const myProduct = {
-        //     name: upperCaseFunction(values?.name),
-        //     description: values?.description.trim(),
-        //     quantity: values?.quantity,
-        //     price: values?.price,
-        //     category: values?.category,
-        //     sub_category: values?.sub_category,
-        //     operating_system: values?.operating_system,
-        //     status: values?.status,
-        //     deal: values?.deal,
-        //     weight_unit: values?.weight_unit,
-        //     weight: values?.weight,
-        //     image: myImageURL,
-        //     image_file_id: myImageFileId,
-        // }
 
         try {
             await fetch('https://66b94e60ecb482096469.appwrite.global/update_product', {
@@ -695,7 +678,7 @@ const ProductsPage = () => {
                                                 <div className="hidden items-center gap-2 md:ml-auto md:flex">
 
                                                     <SheetClose asChild>
-                                                        <Button type="button" className='bg-red-500 hover:bg-red-700 text-gray-100' onClick={clearProductForm}>Cancelar</Button>
+                                                        <Button disabled={loading} type="button" className='bg-red-500 hover:bg-red-700 text-gray-100' onClick={clearProductForm}>Cancelar</Button>
                                                     </SheetClose>
                                                     <Button type="submit" className='bg-gray-900 hover:bg-blue-600'>
                                                         {isUpdateActive ? loading ?

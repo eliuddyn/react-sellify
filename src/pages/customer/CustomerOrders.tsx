@@ -124,11 +124,11 @@ const CustomerOrdersPage = () => {
                                                 </h3>
 
                                                 <div className="rounded-t-lg border-b border-gray-300 bg-slate-100 px-4 py-3 sm:flex sm:items-center sm:justify-between sm:space-x-6 sm:px-6 lg:space-x-8">
-                                                    <dl className="flex-auto space-y-2 divide-y divide-gray-200 text-sm text-gray-600 sm:grid sm:grid-cols-3 sm:gap-x-6 sm:space-y-0 sm:divide-y-0 lg:w-1/2 lg:flex-none lg:gap-x-8">
+                                                    <dl className="flex-auto space-y-2 divide-y divide-gray-200 text-sm text-gray-600 sm:grid sm:grid-cols-3 sm:gap-x-6 sm:space-y-0 sm:divide-y-0">
                                                         <div className="flex justify-between sm:block">
                                                             <dt className="font-bold text-gray-900">Fecha</dt>
                                                             <dd className="sm:mt-1 text-gray-700 font-medium">
-                                                                <span>{format(order.orderDate, 'PPP', { locale: es })}</span>
+                                                                <span>{format(order.orderDate, 'd LLL u - h:mm aaa', { locale: es })}</span>
                                                             </dd>
                                                         </div>
                                                         <div className="flex justify-between pt-3 sm:block sm:pt-0">

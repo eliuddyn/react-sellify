@@ -30,6 +30,11 @@ const collections: CollectionType[] = [
     },
     {
         dbId: databaseID,
+        id: import.meta.env.VITE_COLLECTION_ID_ADDRESSES,
+        name: "addresses",
+    },
+    {
+        dbId: databaseID,
         id: import.meta.env.VITE_COLLECTION_ID_CART_ITEMS,
         name: "cartItems",
     },

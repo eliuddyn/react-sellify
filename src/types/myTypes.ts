@@ -60,3 +60,23 @@ export type Customer = {
     app_user_ID: string
     stripe_customer_ID: string
 }
+
+export type Neighborhood = {
+    neighborhoodName: string;
+}
+
+export type MunicipalDistrict = {
+    municipalDistrictName: string;
+    neighborhoods: Neighborhood[];
+}
+
+export type Municipality = {
+    municipalityName: string;
+    municipalDistricts: MunicipalDistrict[];
+}
+
+export type Province = {
+    name: string;
+    zone: string;
+    municipalities: Municipality[];
+}

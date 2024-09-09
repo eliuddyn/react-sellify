@@ -7,7 +7,6 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -88,7 +87,7 @@ const Header = ({ theSmartphones, theTablets, theSmartwatches, theAccesories }: 
                     <div className="fixed inset-0 z-40 flex">
                         <DialogPanel
                             transition
-                            className="relative flex w-full max-w-xs transform flex-col overflow-y-auto bg-white pb-12 shadow-xl transition duration-300 ease-in-out data-[closed]:-translate-x-full"
+                            className="relative flex w-full max-w-sm transform flex-col overflow-y-auto bg-white pb-12 shadow-xl transition duration-300 ease-in-out data-[closed]:-translate-x-full"
                         >
                             <div className="flex justify-end px-4 pb-2 pt-3">
                                 <button
@@ -137,7 +136,7 @@ const Header = ({ theSmartphones, theTablets, theSmartwatches, theAccesories }: 
                                                     key={product.$id}
                                                     to={userSession ? `/tienda/los_productos/${product.$id}` : `/los_productos/${product.$id}`}
                                                     onClick={() => setMenuOpen(false)}
-                                                    className="group relative rounded-2xl border border-dashed bg-rose-100 p-1"
+                                                    className="group relative rounded-2xl border border-dashed bg-pink-100 p-1"
                                                 >
                                                     <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-xl bg-gray-100 group-hover:opacity-75">
                                                         <img alt={product.name} src={product.image} className="object-cover object-center" />
@@ -162,7 +161,7 @@ const Header = ({ theSmartphones, theTablets, theSmartwatches, theAccesories }: 
                                                     key={product.$id}
                                                     to={userSession ? `/tienda/los_productos/${product.$id}` : `/los_productos/${product.$id}`}
                                                     onClick={() => setMenuOpen(false)}
-                                                    className="group relative rounded-2xl border border-dashed bg-rose-100 p-1"
+                                                    className="group relative rounded-2xl border border-dashed bg-pink-100 p-1"
                                                 >
                                                     <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-xl bg-gray-100 group-hover:opacity-75">
                                                         <img alt={product.name} src={product.image} className="object-cover object-center" />
@@ -187,7 +186,7 @@ const Header = ({ theSmartphones, theTablets, theSmartwatches, theAccesories }: 
                                                     key={product.$id}
                                                     to={userSession ? `/tienda/los_productos/${product.$id}` : `/los_productos/${product.$id}`}
                                                     onClick={() => setMenuOpen(false)}
-                                                    className="group relative rounded-2xl border border-dashed bg-rose-100 p-1"
+                                                    className="group relative rounded-2xl border border-dashed bg-pink-100 p-1"
                                                 >
                                                     <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-xl bg-gray-100 group-hover:opacity-75">
                                                         <img alt={product.name} src={product.image} className="object-cover object-center" />
@@ -212,7 +211,7 @@ const Header = ({ theSmartphones, theTablets, theSmartwatches, theAccesories }: 
                                                     key={product.$id}
                                                     to={userSession ? `/tienda/los_productos/${product.$id}` : `/los_productos/${product.$id}`}
                                                     onClick={() => setMenuOpen(false)}
-                                                    className="group relative rounded-2xl border border-dashed bg-rose-100 p-1"
+                                                    className="group relative rounded-2xl border border-dashed bg-pink-100 p-1"
                                                 >
                                                     <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-xl bg-gray-100 group-hover:opacity-75">
                                                         <img alt={product.name} src={product.image} className="object-cover object-center" />
@@ -296,7 +295,7 @@ const Header = ({ theSmartphones, theTablets, theSmartwatches, theAccesories }: 
                                                                             key={product.$id}
                                                                             as={Link}
                                                                             to={userSession ? `/tienda/los_productos/${product.$id}` : `/los_productos/${product.$id}`}
-                                                                            className="group relative rounded-xl border border-dashed bg-rose-100 hover:bg-rose-200 p-1"
+                                                                            className="group relative rounded-xl border border-dashed bg-pink-100 hover:bg-indigo-100 p-1"
                                                                         >
                                                                             <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-xl bg-gray-100 group-hover:opacity-75">
                                                                                 <img
@@ -350,7 +349,7 @@ const Header = ({ theSmartphones, theTablets, theSmartwatches, theAccesories }: 
                                                                             key={product.$id}
                                                                             as={Link}
                                                                             to={userSession ? `/tienda/los_productos/${product.$id}` : `/los_productos/${product.$id}`}
-                                                                            className="group relative rounded-xl border border-dashed bg-rose-100 hover:bg-rose-200 p-1"
+                                                                            className="group relative rounded-xl border border-dashed bg-pink-100 hover:bg-indigo-100 p-1"
                                                                         >
                                                                             <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-xl bg-gray-100 group-hover:opacity-75">
                                                                                 <img
@@ -403,7 +402,7 @@ const Header = ({ theSmartphones, theTablets, theSmartwatches, theAccesories }: 
                                                                             key={product.$id}
                                                                             as={Link}
                                                                             to={userSession ? `/tienda/los_productos/${product.$id}` : `/los_productos/${product.$id}`}
-                                                                            className="group relative rounded-xl border border-dashed bg-rose-100 hover:bg-rose-200 p-1"
+                                                                            className="group relative rounded-xl border border-dashed bg-pink-100 hover:bg-indigo-100 p-1"
                                                                         >
                                                                             <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-xl bg-gray-100 group-hover:opacity-75">
                                                                                 <img
@@ -457,7 +456,7 @@ const Header = ({ theSmartphones, theTablets, theSmartwatches, theAccesories }: 
                                                                             key={product.$id}
                                                                             as={Link}
                                                                             to={userSession ? `/tienda/los_productos/${product.$id}` : `/los_productos/${product.$id}`}
-                                                                            className="group relative rounded-xl border border-dashed bg-rose-100 hover:bg-rose-200 p-1"
+                                                                            className="group relative rounded-xl border border-dashed bg-pink-100 hover:bg-indigo-100 p-1"
                                                                         >
                                                                             <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-xl bg-gray-100 group-hover:opacity-75">
                                                                                 <img
@@ -577,7 +576,15 @@ const Header = ({ theSmartphones, theTablets, theSmartwatches, theAccesories }: 
                                                             </Avatar>
                                                         </DropdownMenuTrigger>
                                                         <DropdownMenuContent align="end">
-                                                            <DropdownMenuLabel className='text-center text-lg'>Mi Cuenta</DropdownMenuLabel>
+
+                                                            <DropdownMenuItem className='cursor-pointer'>
+                                                                <button
+                                                                    className='w-full text-center text-gray-700 text-base font-bold'
+                                                                    onClick={() => navigate('/direcciones')}
+                                                                >
+                                                                    Mis Direcciones
+                                                                </button>
+                                                            </DropdownMenuItem>
 
                                                             <DropdownMenuSeparator />
 
@@ -600,6 +607,7 @@ const Header = ({ theSmartphones, theTablets, theSmartwatches, theAccesories }: 
                                                                     Salir
                                                                 </button>
                                                             </DropdownMenuItem>
+
                                                         </DropdownMenuContent>
                                                     </DropdownMenu>
 

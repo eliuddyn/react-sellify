@@ -65,7 +65,7 @@ const OrdersPage = () => {
                                         </h3>
 
                                         <div className="rounded-t-lg border-b border-gray-300 bg-slate-100 px-4 py-3 sm:flex sm:items-center sm:justify-between sm:space-x-6 sm:px-6 lg:space-x-8">
-                                            <div className="flex-auto space-y-2 divide-y divide-gray-200 text-sm text-gray-600 sm:grid sm:grid-cols-2 sm:gap-y-2 sm:gap-x-3 sm:space-y-0 sm:divide-y-0 lg:grid-cols-4 lg:w-4/5 lg:flex-none lg:gap-x-4">
+                                            <div className="flex-auto space-y-2 divide-y divide-gray-200 text-sm text-gray-600 sm:grid sm:grid-cols-2 sm:gap-y-2 sm:gap-x-3 sm:space-y-0 sm:divide-y-0 lg:grid-cols-4">
 
                                                 <div className="flex items-center justify-between sm:block sm:pt-0">
 
@@ -110,7 +110,7 @@ const OrdersPage = () => {
                                                 <div className="flex items-center justify-between pt-2 sm:block sm:pt-0">
                                                     <div className="font-bold text-gray-900">Fecha</div>
                                                     <div className="sm:mt-1 text-gray-900 font-medium">
-                                                        <span>{format(order.orderDate, 'PPP', { locale: es })}</span>
+                                                        <span>{format(order.orderDate, 'd LLL u - h:mm aaa', { locale: es })}</span>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center justify-between pt-2 sm:block sm:pt-0">

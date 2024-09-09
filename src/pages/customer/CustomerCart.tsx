@@ -26,7 +26,7 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/customFunctions/formatPrice";
 import useSellifyStore from "@/store/user";
@@ -49,7 +49,7 @@ type FormValues = {
 
 const CustomerCartPage = () => {
 
-    //const navigate = useNavigate()
+    const navigate = useNavigate()
     const [allTheCartItems, setAllTheCartItems] = useState<Models.Document[] | null>(null);
     const [allTheUnavailableCartItems, setAllTheUnavailableCartItems] = useState<Models.Document[]>([]);
     const [subTotal, setSubTotal] = useState<number>(0)
@@ -63,6 +63,8 @@ const CustomerCartPage = () => {
     const customerInSession = useSellifyStore((state) => state.customerInSession)
     const customerCartItemsInSession = useSellifyStore((state) => state.customerCartItemsInSession)
     const setCustomerCartItemsInSession = useSellifyStore((state) => state.setCustomerCartItemsInSession)
+    const [defaultAddress, setDefaultAddress] = useState<Models.Document | null>(null);
+    const [isDefaultAdressFound, setIsDefaultAdressFound] = useState<boolean>(false)
 
     // const formToPayTheProduct = useForm<z.infer<typeof paymentCardFormSchema>>({
     //     resolver: zodResolver(paymentCardFormSchema),
@@ -96,6 +98,7 @@ const CustomerCartPage = () => {
     });
 
     useEffect(() => {
+        getDefaultAddress()
         getAllCartItems()
     }, [])
 
@@ -139,6 +142,19 @@ const CustomerCartPage = () => {
         setOrderTotal(myShippingTotal + mySubTotal)
         setCustomerCartItemsInSession(theCartItems, 'login')
         setAllTheCartItems(theCartItems)
+    }
+
+    const getDefaultAddress = async () => {
+        const addresses = await db.addresses.list([
+            Query.equal('customerID', customerInSession?.id as string),
+            Query.equal('isDefault', true)
+        ]);
+
+        if (addresses.documents[0]?.isDefault === true) {
+            setDefaultAddress(addresses.documents[0])
+        } else {
+            setIsDefaultAdressFound(true)
+        }
     }
 
     async function changeCartItemQuantity() {
@@ -556,15 +572,55 @@ const CustomerCartPage = () => {
 
                                     <div className="flex flex-col gap-4 mt-16 lg:mt-0 lg:col-span-5">
 
+                                        {/* Shipping Info */}
+                                        {defaultAddress && (
+                                            <section className="rounded-lg border border-gray-300 bg-gray-50 p-4">
+                                                <div className="flex items-start justify-center">
+                                                    <span className="text-xl text-rose-800 font-bold">
+                                                        Mi Dirección
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-start text-gray-800 space-x-4 rounded-md p-0.5 transition-all">
+                                                    <div className="pt-5">
+                                                        <p className="text-sm font-bold leading-none">{defaultAddress?.fullname}</p>
+                                                        <p className="pt-3 text-sm">
+                                                            {defaultAddress?.street_type === 'CALLE' ? 'C/' : 'AVE.'} {defaultAddress?.street_name} #{defaultAddress?.street_number}
+                                                        </p>
+                                                        <p className="text-sm">
+                                                            {defaultAddress?.neighborhood}
+                                                        </p>
+                                                        <p className="text-sm">
+                                                            {defaultAddress?.province}
+                                                        </p>
+                                                        <p className="text-sm">
+                                                            {defaultAddress?.country}
+                                                        </p>
+                                                        <p className="text-sm">
+                                                            Código postal: {defaultAddress?.zip_code}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-start space-x-4 rounded-md p-0.5 pt-2 text-accent-foreground transition-all">
+                                                    <div className="space-y-1">
+                                                        <p className="text-sm font-bold leading-none">Teléfono</p>
+                                                        <p className="text-sm text-gray-800">
+                                                            {defaultAddress?.phone_number}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        )}
 
                                         {/* Order summary */}
                                         <section
                                             aria-labelledby="summary-heading"
-                                            className="rounded-lg border border-gray-300 bg-gray-50 px-4 py-6 sm:p-6 lg:p-8"
+                                            className="rounded-lg border border-gray-300 bg-gray-50 p-4"
                                         >
-                                            <h2 id="summary-heading" className="text-lg font-medium text-gray-900">
-                                                Resumen del pedido
-                                            </h2>
+                                            <div className="flex items-start justify-center">
+                                                <h2 id="summary-heading" className="text-xl text-rose-800 font-bold">
+                                                    Resumen del pedido
+                                                </h2>
+                                            </div>
 
                                             <dl className="mt-6 space-y-4">
                                                 <div className="flex items-center justify-between">
@@ -574,10 +630,6 @@ const CustomerCartPage = () => {
                                                 <div className="flex items-center justify-between border-t border-gray-200 pt-4">
                                                     <dt className="flex items-center text-sm text-gray-600">
                                                         <span>Costos de envío</span>
-                                                        {/* <a href="#" className="ml-2 flex-shrink-0 text-gray-400 hover:text-gray-500">
-                                            <span className="sr-only">Learn more about how shipping is calculated</span>
-                                            <CircleHelp aria-hidden="true" className="h-5 w-5" />
-                                        </a> */}
                                                     </dt>
                                                     <dd className="text-sm font-medium text-gray-900">RD$ {formatPrice(shippingTotal)}</dd>
                                                 </div>
@@ -589,7 +641,7 @@ const CustomerCartPage = () => {
 
                                             <div className="mt-6">
                                                 <Button
-                                                    disabled={allTheCartItems?.length === 0 || loading || loadingQuantity}
+                                                    disabled={allTheCartItems?.length === 0 || loading || loadingQuantity || defaultAddress === null}
                                                     onClick={() => payTheProducts()}
                                                     type="button"
                                                     className="w-full rounded-md border border-transparent bg-gray-900 hover:bg-rose-600 px-4 py-3 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
@@ -818,23 +870,23 @@ const CustomerCartPage = () => {
             </AlertDialog>
 
             {/* SUCCESSFUL PAYMENT ALERT DIALOG */}
-            {/* <AlertDialog open={isPaymentSuccessful} onOpenChange={setIsPaymentSuccessful}>
+            <AlertDialog open={isDefaultAdressFound} onOpenChange={setIsDefaultAdressFound}>
                 <AlertDialogContent className='mx-2'>
                     <AlertDialogHeader>
-                        <AlertDialogTitle className='flex items-center justify-center text-xl sm:text-2xl bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-500'>
-                            <span>Pago Exitoso</span>
+                        <AlertDialogTitle className='flex items-center justify-center text-center text-2xl bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-purple-500'>
+                            <span>No se encontró dirección predeterminada</span>
                         </AlertDialogTitle>
                         <AlertDialogDescription className='flex flex-col gap-y-3 text-center'>
-                            <span className='text-xl font-bold text-gray-900'>Gracias por realizar su pedido.</span>
-                            <span className='text-base font-medium text-gray-900'>Será redirigido a su página de pedidos.</span>
+                            <span className='text-xl text-gray-900'>Agregue una dirección predeterminada para hacer el pedido.</span>
+                            <span className='text-base font-medium text-gray-900'>Será redirigido a la página de direcciones.</span>
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter className="sm:flex-row sm:justify-center">
 
-                        <AlertDialogAction className='bg-rose-600' onClick={() => reCheckTheCart()}>Entendido</AlertDialogAction>
+                        <AlertDialogAction className='bg-rose-600' onClick={() => navigate('/direcciones')}>Entendido</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
-            </AlertDialog> */}
+            </AlertDialog>
         </>
     )
 }

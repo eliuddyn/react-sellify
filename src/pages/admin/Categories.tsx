@@ -245,7 +245,7 @@ const CategoriesPage = () => {
         }
     }
 
-    const fillCategoryToDelete = async (theCategory: any) => {
+    const fillCategoryToDelete = (theCategory: any) => {
 
         // Check if this category has products attached 
 
@@ -395,7 +395,7 @@ const CategoriesPage = () => {
 
             {/* CANNOT BE DELETED ALERT DIALOG */}
             <AlertDialog open={canNotBeDeletedDialog} onOpenChange={setCanNotBeDeletedDialog}>
-                <AlertDialogContent className=''>
+                <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle className='text-2xl text-red-700 text-center'>{selectedCategoryToDelete?.name}</AlertDialogTitle>
                         <AlertDialogDescription className='text-base text-gray-900 text-center'>
@@ -410,7 +410,7 @@ const CategoriesPage = () => {
 
             {/* CAN BE DELETED ALERTDIALOG */}
             <AlertDialog open={canBeDeletedDialog} onOpenChange={setCanBeDeletedDialog}>
-                <AlertDialogContent className=''>
+                <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle className='text-2xl text-red-700 text-center'>{selectedCategoryToDelete?.name}</AlertDialogTitle>
                         <AlertDialogDescription className='flex flex-col text-base text-gray-900 text-center'>
