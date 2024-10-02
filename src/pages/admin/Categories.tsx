@@ -87,7 +87,7 @@ const CategoriesPage = () => {
         },
         {
             accessorKey: "sub_categories",
-            header: "Categorías",
+            header: "Sub-Categorías",
             cell: ({ row }) => (
                 <TooltipProvider>
                     <Tooltip>
